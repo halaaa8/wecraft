@@ -1,0 +1,7 @@
+{
+  "name": "wecraft-dashboard",
+  "version": "1.0.0",
+  "dependencies": {
+    "firebase-tools": "^13.17.0"
+  }
+}

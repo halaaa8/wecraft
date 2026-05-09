@@ -21,11 +21,26 @@ const ICONS = {
     table_view: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18M10 3v18M3 3h18v18H3z"/></svg>`,
     kanban_view: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="11" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>`,
     phone: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.81.37 1.6.72 2.33a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.75-1.29a2 2 0 0 1 2.11-.45c.73.35 1.52.6 2.33.72A2 2 0 0 1 22 16.92z"></path></svg>`,
+    mail: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
     sun: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>`,
     moon: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3c0 .4.04.79.1 1.17A7 7 0 0021 12.79z"></path></svg>`,
 };
 
 // --- CONFIG ---
+const RECAP_EMAIL = "madrari.oussama.officiel@gmail.com";
+const EMAILJS_PUBLIC_KEY = "s1vwibeWEKQ7ZsE2z"; // Replace with your Public Key
+const EMAILJS_SERVICE_ID = "service_9eabz8i"; // Replace with your Service ID
+const EMAILJS_TEMPLATE_ID = "template_1m9z65r"; // Replace with your Template ID
+
+// Initialize EmailJS
+(function () {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init({
+            publicKey: EMAILJS_PUBLIC_KEY,
+        });
+    }
+})();
+
 const STATUSES = ["To Do", "Doing", "Done"];
 const STATUS_COLORS = {
     "To Do": { bg: "#ffe5e5", text: "#8c0909", dot: "#f54d4d" },
@@ -39,10 +54,10 @@ const STATUS_COLORS = {
     "Cancelled": { bg: "#f98080", text: "#400303", dot: "#8c0909" },
 };
 const TASK_STATUSES = ["To Do", "Doing", "Done"];
-const TASK_COLORS = { 
-    "To Do": { bg: "#ffe5e5", text: "#8c0909", dot: "#f54d4d" }, 
-    "Doing": { bg: "#ffd6d6", text: "#8c0909", dot: "#d90f0f" }, 
-    "Done": { bg: "#fcb3b3", text: "#660606", dot: "#b30c0c" } 
+const TASK_COLORS = {
+    "To Do": { bg: "#ffe5e5", text: "#8c0909", dot: "#f54d4d" },
+    "Doing": { bg: "#ffd6d6", text: "#8c0909", dot: "#d90f0f" },
+    "Done": { bg: "#fcb3b3", text: "#660606", dot: "#b30c0c" }
 };
 const PRODUCTS = [
     "Ruban",
@@ -135,6 +150,20 @@ function updateThemeToggleIcon(theme) {
 const uid = () => Math.random().toString(36).slice(2, 9);
 const formatCurrency = (val) => Number(val).toLocaleString() + ' MAD';
 
+const formatPhone = (phone) => {
+    if (!phone) return '';
+    let p = String(phone).trim();
+    // If it's 9 digits starting with 5, 6, or 7, add the missing leading zero
+    if (p.length === 9 && /^[567]/.test(p)) return '0' + p;
+    return p;
+};
+
+const getWhatsAppLink = (phone) => {
+    let p = formatPhone(phone);
+    if (p.startsWith('0')) p = p.slice(1);
+    return `https://wa.me/212${p}`;
+};
+
 async function sheetsAction(action, payload = {}) {
     showLoading(true);
     try {
@@ -172,7 +201,7 @@ async function callSheets(data) {
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(data)
         });
-        
+
         return { success: true };
     } catch (e) {
         console.error("Sheets Connection Error:", e);
@@ -195,9 +224,67 @@ function showLoading(show) {
     loader.style.display = show ? 'flex' : 'none';
 }
 
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+
+    let icon = '';
+    if (type === 'success') icon = '✓';
+    else if (type === 'error') icon = '✕';
+    else icon = 'ℹ';
+
+    toast.innerHTML = `
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: ${type === 'success' ? '#ecfdf5' : type === 'error' ? '#fee2e2' : '#eff6ff'}; color: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'}; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">${icon}</div>
+        <div style="font-size: 14px; font-weight: 500;">${message}</div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
+function showConfirm({ title, text, confirmText = 'Delete', cancelText = 'Cancel', onConfirm }) {
+    const body = `
+        <div class="confirm-modal-body">
+            <div class="confirm-icon-wrap">
+                <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <div class="confirm-title">${title}</div>
+            <div class="confirm-text">${text}</div>
+        </div>
+    `;
+    const footer = `
+        <div style="display: flex; gap: 12px; width: 100%;">
+            <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1; justify-content: center;">${cancelText}</button>
+            <button class="btn btn-danger" id="confirm-action-btn" style="flex: 1; justify-content: center; background: #ef4444; border-color: #ef4444; color: white;">${confirmText}</button>
+        </div>
+    `;
+
+    openModal('', body, footer, '400px');
+
+    document.getElementById('confirm-action-btn').onclick = () => {
+        onConfirm();
+    };
+}
+
 // --- CORE LOGIC ---
 async function init() {
     applyTheme(getInitialTheme());
+
+    // Initialize EmailJS
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init({
+            publicKey: EMAILJS_PUBLIC_KEY,
+        });
+        console.log("EmailJS Initialized");
+    } else {
+        console.error("EmailJS SDK not found!");
+    }
 
     // Inject Icons
     document.querySelectorAll('[id^="icon-"]').forEach(el => {
@@ -229,7 +316,7 @@ function setupEventListeners() {
             link.classList.add('active');
             currentView = link.dataset.view;
             renderView();
-            
+
             // Auto-close sidebar on mobile
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('mobile-open');
@@ -242,7 +329,7 @@ function setupEventListeners() {
     document.getElementById('toggle-sidebar').addEventListener('click', () => {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
-        
+
         if (window.innerWidth <= 768) {
             sidebar.classList.toggle('mobile-open');
             overlay?.classList.toggle('active');
@@ -277,7 +364,7 @@ function renderView() {
     const content = document.getElementById('main-content');
     const title = document.getElementById('view-title');
     title.textContent = currentView.charAt(0).toUpperCase() + currentView.slice(1);
-    
+
     content.innerHTML = '';
     content.className = 'content-area fade-in';
 
@@ -328,10 +415,10 @@ function renderDashboard(container) {
                 <h3 class="font-bold mb-4" style="font-size: 15px;">Orders by Status</h3>
                 <div class="progress-container">
                     ${STATUSES.map(s => {
-                        const count = orders.filter(o => o.status === s).length;
-                        const pct = orders.length ? Math.round((count / orders.length) * 100) : 0;
-                        const c = STATUS_COLORS[s];
-                        return `
+        const count = orders.filter(o => o.status === s).length;
+        const pct = orders.length ? Math.round((count / orders.length) * 100) : 0;
+        const c = STATUS_COLORS[s];
+        return `
                             <div class="progress-bar-group">
                                 <div class="progress-info">
                                     <span>${s}</span>
@@ -342,7 +429,7 @@ function renderDashboard(container) {
                                 </div>
                             </div>
                         `;
-                    }).join('')}
+    }).join('')}
                 </div>
             </div>
             <div class="card">
@@ -395,8 +482,8 @@ function renderOrders(container) {
     const filtered = orders.filter(o => {
         const q = ordersFilter.search.toLowerCase();
         return (!q || o.client.toLowerCase().includes(q) || (o.article && o.article.toLowerCase().includes(q))) &&
-               (!ordersFilter.status || o.status === ordersFilter.status) &&
-               (!ordersFilter.city || (o.ville && o.ville.toLowerCase().includes(ordersFilter.city.toLowerCase())));
+            (!ordersFilter.status || o.status === ordersFilter.status) &&
+            (!ordersFilter.city || (o.ville && o.ville.toLowerCase().includes(ordersFilter.city.toLowerCase())));
     });
 
     let html = `
@@ -458,8 +545,8 @@ function renderOrders(container) {
                                 <td>${o.ville}</td>
                                 <td style="text-align: center;">
                                     <div class="flex items-center gap-3 justify-center">
-                                        <a href="https://wa.me/212${o.phone ? String(o.phone).startsWith('0') ? String(o.phone).slice(1) : o.phone : ''}" target="_blank" style="color: #10b981;" title="WhatsApp">${ICONS.whatsapp}</a>
-                                        <a href="tel:${o.phone || ''}" style="color: var(--text-muted);" title="Call">${ICONS.phone}</a>
+                                        <a href="${getWhatsAppLink(o.phone)}" target="_blank" style="color: #10b981;" title="WhatsApp">${ICONS.whatsapp}</a>
+                                        <a href="tel:${formatPhone(o.phone)}" style="color: var(--text-muted);" title="Call">${ICONS.phone}</a>
                                     </div>
                                 </td>
                                 <td style="text-align: center;">${renderStatusDropdown(o)}</td>
@@ -481,9 +568,9 @@ function renderOrders(container) {
         html += `
             <div class="kanban-board">
                 ${STATUSES.map(s => {
-                    const colOrders = filtered.filter(o => o.status === s);
-                    const color = STATUS_COLORS[s];
-                    return `
+            const colOrders = filtered.filter(o => o.status === s);
+            const color = STATUS_COLORS[s];
+            return `
                         <div class="kanban-column" data-status="${s}">
                             <div class="kanban-header">
                                 ${renderBadge(s)}
@@ -502,8 +589,8 @@ function renderOrders(container) {
                                                 <button class="btn-icon view-order" data-id="${o.id}" style="padding: 4px;" title="View Details">${ICONS.eye}</button>
                                                 <button class="btn-icon edit-order" data-id="${o.id}" style="padding: 4px;" title="Edit">${ICONS.edit}</button>
                                                 <button class="btn-icon delete-order" data-id="${o.id}" style="padding: 4px; color: var(--accent-rose);" title="Delete">${ICONS.trash}</button>
-                                                <a href="https://wa.me/212${o.phone ? String(o.phone).startsWith('0') ? String(o.phone).slice(1) : o.phone : ''}" target="_blank" style="color: #10b981;" title="WhatsApp">${ICONS.whatsapp}</a>
-                                                <a href="tel:${o.phone || ''}" style="color: var(--text-muted);" title="Call">${ICONS.phone}</a>
+                                                <a href="${getWhatsAppLink(o.phone)}" target="_blank" style="color: #10b981;" title="WhatsApp">${ICONS.whatsapp}</a>
+                                                <a href="tel:${formatPhone(o.phone)}" style="color: var(--text-muted);" title="Call">${ICONS.phone}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -511,7 +598,7 @@ function renderOrders(container) {
                             </div>
                         </div>
                     `;
-                }).join('')}
+        }).join('')}
             </div>
         `;
     }
@@ -542,7 +629,7 @@ function renderOrders(container) {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
             const order = orders.find(o => o.id === id);
-            if(order) showOrderDetailsModal(order);
+            if (order) showOrderDetailsModal(order);
         });
     });
 
@@ -558,15 +645,15 @@ function renderOrders(container) {
             const id = e.target.dataset.id;
             const newStatus = e.target.value;
             const order = orders.find(o => o.id === id);
-            
+
             if (order && order.status !== newStatus) {
                 const originalStatus = order.status;
                 const updatedOrder = { ...order, status: newStatus };
-                
+
                 // Optimistic UI update
                 orders = orders.map(o => o.id === id ? updatedOrder : o);
                 renderView();
-                
+
                 const result = await callSheets({ action: 'updateOrder', order: updatedOrder });
                 if (!result || !result.success) {
                     alert("Failed to update status in the database.");
@@ -583,10 +670,10 @@ function renderOrders(container) {
 
 function renderTasks(container) {
     const activeOrders = orders.filter(o => ['To Do', 'Doing'].includes(o.status));
-    
+
     // Aggregate inventory
     const inventory = {}; // group by article, then by combination
-    
+
     activeOrders.forEach(order => {
         const items = order.items && order.items.length > 0 ? order.items : [{
             article: order.article,
@@ -602,13 +689,13 @@ function renderTasks(container) {
             const isRibbon = article === 'Ruban';
             if (isRibbon) {
                 if (order.status === 'Doing') return;
-                
+
                 const colorsData = (item.colorsData && item.colorsData.length > 0) ? item.colorsData : [{
                     name: order.colors || 'Unknown Color',
                     qty: order.quantities || 1,
                     printColor: 'Standard'
                 }];
-                
+
                 colorsData.forEach(c => {
                     let qty = parseInt(c.qty, 10);
                     if (isNaN(qty)) {
@@ -632,7 +719,7 @@ function renderTasks(container) {
                 const size = sd.size || 'Unknown Size';
                 const print = sd.print || 'Standard';
                 const key = `${color}|||${size}|||${print}`;
-                
+
                 if (!inventory[article][key]) {
                     inventory[article][key] = { color, size, print, qty: 0 };
                 }
@@ -688,7 +775,7 @@ function renderTasks(container) {
         for (const [article, itemsObj] of Object.entries(inventory)) {
             const isRibbon = article === 'Ruban';
             const itemsList = Object.values(itemsObj).sort((a, b) => b.qty - a.qty);
-            
+
             const listHtml = itemsList.map(it => {
                 if (isRibbon) {
                     return `
@@ -742,7 +829,7 @@ function renderTasks(container) {
     document.getElementById('update-stock-btn')?.addEventListener('click', () => {
         const qty = parseInt(document.getElementById('stock-qty-input').value, 10);
         const prod = document.getElementById('stock-product-select').value;
-        
+
         if (isNaN(qty)) {
             alert('Please enter a valid quantity.');
             return;
@@ -762,38 +849,38 @@ function renderClients(container) {
         </div>
         <div class="clients-grid">
             ${clients.map(c => {
-                const oCount = orders.filter(o => o.client === c.name).length;
-                const totalSpent = orders.filter(o => o.client === c.name).reduce((s, o) => s + o.price, 0);
-                return `
+        const oCount = orders.filter(o => o.client === c.name).length;
+        const totalSpent = orders.filter(o => o.client === c.name).reduce((s, o) => s + o.price, 0);
+        return `
                     <div class="client-card">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex gap-3">
-                                <div class="client-avatar">${c.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}</div>
+                                <div class="client-avatar">${c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</div>
                                 <div>
                                     <h4 class="font-bold">${c.name}</h4>
                                     <p class="text-xs" style="color: var(--text-light)">${c.city}</p>
                                 </div>
                             </div>
-                            <a href="https://wa.me/212${c.phone.slice(1)}" target="_blank" style="color: #10b981;">${ICONS.whatsapp}</a>
+                            <a href="${getWhatsAppLink(c.phone)}" target="_blank" style="color: #10b981;">${ICONS.whatsapp}</a>
                         </div>
                         <div class="flex gap-2 mb-4">
-                            <div style="flex: 1; background: #f8f7f5; padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="flex: 1; background: var(--surface-muted); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
                                 <div class="font-bold">${oCount}</div>
                                 <div class="text-xs" style="color: var(--text-light)">Orders</div>
                             </div>
-                            <div style="flex: 1; background: #f8f7f5; padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="flex: 1; background: var(--surface-muted); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
                                 <div class="font-bold">${totalSpent}</div>
                                 <div class="text-xs" style="color: var(--text-light)">Spent</div>
                             </div>
                         </div>
                         <p class="text-sm mb-4" style="color: var(--text-muted); min-height: 40px;">${c.notes || 'No notes available.'}</p>
-                        <div class="flex gap-2" style="border-top: 1px solid #f3f4f6; pt-4">
+                        <div class="flex gap-2" style="border-top: 1px solid var(--border-color); pt-4">
                             <button class="btn btn-secondary edit-client" data-id="${c.id}" style="flex: 1; justify-content: center; font-size: 12px; margin-top: 12px;">${ICONS.edit} Edit</button>
                             <button class="btn btn-danger delete-client" data-id="${c.id}" style="margin-top: 12px;">${ICONS.trash}</button>
                         </div>
                     </div>
                 `;
-            }).join('')}
+    }).join('')}
         </div>
     `;
 
@@ -883,89 +970,116 @@ function renderStatusDropdown(order) {
 
 function showOrderModal(order = null) {
     const title = order ? 'Edit Order' : 'New Order';
+    const headerActions = order ? `<button class="header-action-btn danger" onclick="deleteOrder('${order.id}')" title="Delete Order">${ICONS.trash}</button>` : '';
+
     const STEPS = [
-        { label: 'Client',   icon: '👤' },
+        { label: 'Client', icon: '👤' },
         { label: 'Products', icon: '🗂️' },
-        { label: 'Design',   icon: '🖼️' },
+        { label: 'Design', icon: '🖼️' },
         { label: 'Delivery', icon: '📦' },
     ];
     let currentStep = 0;
 
     const orderItems = order?.items || [
-        { id: uid(), article: 'Ruban', colorsData: [], sachetData: {} }
+        { id: uid(), article: 'Ruban', colorsData: [], sachetData: {}, collapsed: false }
     ];
 
     // ---- Render helpers ----
     const renderItemsList = () => {
         const container = document.getElementById('items-container');
         if (!container) return;
-        container.innerHTML = orderItems.map((item, idx) => {
+        let html = orderItems.map((item, idx) => {
             const isRibbon = !['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(item.article);
+            const isCollapsed = item.collapsed;
+
             return `
-                <div class="order-item-card">
-                    <div class="order-item-number">
-                        <span>Product Selection — ${item.article}</span>
-                    </div>
-                    <div class="form-group" style="margin-bottom:14px;">
-                        <label>Article / Product</label>
-                        <select onchange="updateItemArticle(${idx}, this.value)">
-                            <option value="Ruban" ${item.article==='Ruban'?'selected':''}>Ruban</option>
-                            <option value="Sachet sylable" ${item.article==='Sachet sylable'?'selected':''}>Sachet sylable</option>
-                            <option value="Sachet non tissé (avec poignet)" ${item.article==='Sachet non tissé (avec poignet)'?'selected':''}>Sachet non tissé (avec poignet)</option>
-                            <option value="Sachet non tissé (sans poignet)" ${item.article==='Sachet non tissé (sans poignet)'?'selected':''}>Sachet non tissé (sans poignet)</option>
-                        </select>
-                    </div>
-                    <div id="item-fields-${idx}">
-                    ${isRibbon ? `
-                        <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px;">Ribbon Colors &amp; Printing</p>
-                        <div id="ribbon-list-${idx}" class="mb-3"></div>
-                        <button type="button" class="btn btn-secondary w-full" style="justify-content:center;border-style:dashed;font-size:12px;" onclick="openRibbonPicker(${idx})">${ICONS.plus} Add Ribbon Color</button>
-                    ` : `
-                        <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px;">Sachet Specifications</p>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                            <div class="form-group" style="margin-bottom:0;"><label>Color</label><input type="text" value="${item.sachetData?.color||''}" placeholder="White" onchange="updateSachetData(${idx},'color',this.value)"></div>
-                            <div class="form-group" style="margin-bottom:0;"><label>Printing</label><input type="text" value="${item.sachetData?.print||''}" placeholder="Gold" onchange="updateSachetData(${idx},'print',this.value)"></div>
-                            <div class="form-group" style="margin-bottom:0;"><label>Quantity</label><input type="number" value="${item.sachetData?.qty||''}" placeholder="1000" onchange="updateSachetData(${idx},'qty',this.value)"></div>
-                            <div class="form-group" style="margin-bottom:0;"><label>Sizes (cm)</label><input type="text" value="${item.sachetData?.size||''}" placeholder="30x40" onchange="updateSachetData(${idx},'size',this.value)"></div>
+                <div class="order-item-card ${isCollapsed ? 'collapsed' : ''}" id="item-card-${idx}">
+                    <div class="item-collapsed-summary" onclick="expandItem(${idx})">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-weight: 800; color: var(--primary); font-size: 14px;">${item.article}</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">${isRibbon ? (item.colorsData?.length || 0) + ' colors' : (item.sachetData?.qty || 0) + ' pcs'}</div>
                         </div>
-                    `}
+                        <div style="color: var(--text-light);">${ICONS.edit}</div>
+                    </div>
+                    
+                    <div class="item-expanded-content">
+                        <div class="order-item-number">
+                            <span>Product Selection — ${item.article}</span>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                ${orderItems.length > 1 ? `<button type="button" onclick="removeItem(${idx})" style="color:var(--accent-rose); background:none; border:none; cursor:pointer; font-size: 12px; font-weight: 600;">Remove</button>` : ''}
+                                <button type="button" onclick="collapseItem(${idx})" style="color:var(--accent-emerald); background:none; border:none; cursor:pointer; font-size: 12px; font-weight: 600;">Done</button>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label>Article / Product</label>
+                            <select onchange="updateItemArticle(${idx}, this.value)">
+                                <option value="Ruban" ${item.article === 'Ruban' ? 'selected' : ''}>Ruban</option>
+                                <option value="Sachet sylable" ${item.article === 'Sachet sylable' ? 'selected' : ''}>Sachet sylable</option>
+                                <option value="Sachet non tissé (avec poignet)" ${item.article === 'Sachet non tissé (avec poignet)' ? 'selected' : ''}>Sachet non tissé (avec poignet)</option>
+                                <option value="Sachet non tissé (sans poignet)" ${item.article === 'Sachet non tissé (sans poignet)' ? 'selected' : ''}>Sachet non tissé (sans poignet)</option>
+                            </select>
+                        </div>
+                        <div id="item-fields-${idx}">
+                        ${isRibbon ? `
+                            <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px;">Ribbon Colors &amp; Printing</p>
+                            <div id="ribbon-list-${idx}" class="mb-3"></div>
+                            <button type="button" class="btn btn-secondary btn-dashed w-full" style="justify-content:center; font-size:12px;" onclick="openRibbonPicker(${idx})">${ICONS.plus} Add Ribbon Color</button>
+                        ` : `
+                            <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px;">Sachet Specifications</p>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                                <div class="form-group" style="margin-bottom:0;"><label>Color</label><input type="text" value="${item.sachetData?.color || ''}" placeholder="White" onchange="updateSachetData(${idx},'color',this.value)"></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>Printing</label><input type="text" value="${item.sachetData?.print || ''}" placeholder="Gold" onchange="updateSachetData(${idx},'print',this.value)"></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>Quantity</label><input type="number" value="${item.sachetData?.qty || ''}" placeholder="1000" onchange="updateSachetData(${idx},'qty',this.value)"></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>Sizes (cm)</label><input type="text" value="${item.sachetData?.size || ''}" placeholder="30x40" onchange="updateSachetData(${idx},'size',this.value)"></div>
+                            </div>
+                        `}
+                        </div>
                     </div>
                 </div>
             `;
         }).join('');
 
+        html += `
+            <button type="button" class="btn btn-secondary btn-dashed w-full" style="justify-content:center; margin-top:10px;" onclick="addItem()">
+                ${ICONS.plus} Add Another Product
+            </button>
+        `;
+
+        container.innerHTML = html;
+
         orderItems.forEach((item, idx) => {
+            if (item.collapsed) return;
             const lc = document.getElementById(`ribbon-list-${idx}`);
             if (!lc) return;
             if (!item.colorsData?.length) {
                 lc.innerHTML = '<p style="color:var(--text-light);font-size:12px;padding:6px 0;">No ribbons added yet.</p>';
             } else {
                 lc.innerHTML = `<table style="width:100%;font-size:12px;border-collapse:collapse;">
-                    <thead><tr style="border-bottom:1px solid #eee;">
-                        <th style="text-align:left;padding:4px;font-weight:700;">Color</th>
-                        <th style="width:56px;text-align:center;font-weight:700;">Qty</th>
-                        <th style="text-align:left;padding:4px;font-weight:700;">Print</th>
-                        <th style="width:28px;"></th>
+                    <thead><tr style="border-bottom:1px solid var(--border-color);">
+                        <th style="text-align:left;padding:4px;font-weight:700;background:none;color:var(--text-muted);">Color</th>
+                        <th style="width:56px;text-align:center;font-weight:700;background:none;color:var(--text-muted);">Qty</th>
+                        <th style="text-align:left;padding:4px;font-weight:700;background:none;color:var(--text-muted);">Print</th>
+                        <th style="width:28px;background:none;"></th>
                     </tr></thead>
-                    <tbody>${item.colorsData.map((c,cIdx)=>`
-                        <tr style="border-bottom:1px solid #f9f9f9;">
+                    <tbody>${item.colorsData.map((c, cIdx) => `
+                        <tr style="border-bottom:1px solid var(--surface-muted);">
                             <td style="padding:6px 4px;">
                                 <div style="display:flex;align-items:center;gap:8px;">
-                                    <div style="width:14px;height:14px;border-radius:50%;background:${c.hex};border:1px solid #ddd;flex-shrink:0;"></div>
-                                    <span style="font-weight:600;">${c.name}</span>
+                                    <div style="width:14px;height:14px;border-radius:50%;background:${c.hex};border:1px solid var(--border-color);flex-shrink:0;"></div>
+                                    <span style="font-weight:600;color:var(--text-main);">${c.name}</span>
                                 </div>
                             </td>
                             <td style="padding:4px;text-align:center;">
-                                <input type="number" value="${c.qty}" style="padding:2px;width:44px;text-align:center;border-radius:4px;" onchange="updateRibbonProp(${idx},${cIdx},'qty',this.value)">
+                                <input type="number" value="${c.qty}" style="padding:2px;width:44px;text-align:center;border-radius:4px;background:var(--bg-main);color:var(--text-main);border:1px solid var(--border-color);" onchange="updateRibbonProp(${idx},${cIdx},'qty',this.value)">
                             </td>
                             <td style="padding:4px;">
-                                <select style="padding:4px 6px;font-size:11px;" onchange="updateRibbonProp(${idx},${cIdx},'printColor',this.value)">
-                                    ${PRINT_COLORS.map(pc=>`<option value="${pc}" ${c.printColor===pc?'selected':''}>${pc}</option>`).join('')}
-                                    <option value="custom" ${!PRINT_COLORS.includes(c.printColor)&&c.printColor?'selected':''}>Other...</option>
+                                <select style="padding:4px 6px;font-size:11px;background:var(--bg-main);color:var(--text-main);border:1px solid var(--border-color);" onchange="updateRibbonProp(${idx},${cIdx},'printColor',this.value)">
+                                    ${PRINT_COLORS.map(pc => `<option value="${pc}" ${c.printColor === pc ? 'selected' : ''}>${pc}</option>`).join('')}
+                                    <option value="custom" ${!PRINT_COLORS.includes(c.printColor) && c.printColor ? 'selected' : ''}>Other...</option>
                                 </select>
                             </td>
                             <td style="text-align:right;">
-                                <button type="button" onclick="removeRibbon(${idx},${cIdx})" style="color:#ef4444;font-size:14px;">✕</button>
+                                <button type="button" onclick="removeRibbon(${idx},${cIdx})" style="color:var(--accent-rose);font-size:14px;background:none;border:none;cursor:pointer;">✕</button>
                             </td>
                         </tr>
                     `).join('')}</tbody>
@@ -976,9 +1090,23 @@ function showOrderModal(order = null) {
 
     // ---- Global item handlers ----
     window.updateItemArticle = (idx, val) => { orderItems[idx].article = val; renderItemsList(); };
-    window.removeItem = (idx) => { orderItems.splice(idx,1); renderItemsList(); };
-    window.addItem = () => { orderItems.push({id:uid(),article:'Ruban',colorsData:[],sachetData:{}}); renderItemsList(); };
-    window.updateSachetData = (idx,field,val) => { orderItems[idx].sachetData = orderItems[idx].sachetData||{}; orderItems[idx].sachetData[field]=val; };
+    window.removeItem = (idx) => {
+        if (orderItems.length > 1) {
+            orderItems.splice(idx, 1);
+            renderItemsList();
+        }
+    };
+    window.addItem = () => {
+        orderItems.forEach(it => it.collapsed = true);
+        orderItems.push({ id: uid(), article: 'Ruban', colorsData: [], sachetData: {}, collapsed: false });
+        renderItemsList();
+    };
+    window.collapseItem = (idx) => { orderItems[idx].collapsed = true; renderItemsList(); };
+    window.expandItem = (idx) => {
+        orderItems.forEach((it, i) => it.collapsed = (i !== idx));
+        renderItemsList();
+    };
+    window.updateSachetData = (idx, field, val) => { orderItems[idx].sachetData = orderItems[idx].sachetData || {}; orderItems[idx].sachetData[field] = val; };
     window.openRibbonPicker = (idx) => {
         const currentNames = (orderItems[idx].colorsData || []).map(c => c.name);
         showColorPicker((color, isAdded) => {
@@ -993,15 +1121,15 @@ function showOrderModal(order = null) {
             renderItemsList();
         }, currentNames);
     };
-    window.updateRibbonProp = (iIdx,rIdx,prop,val) => {
+    window.updateRibbonProp = (iIdx, rIdx, prop, val) => {
         orderItems[iIdx].colorsData[rIdx][prop] = val;
-        if (prop==='printColor' && val==='custom') {
+        if (prop === 'printColor' && val === 'custom') {
             const cv = prompt('Enter custom printing color:');
             if (cv) orderItems[iIdx].colorsData[rIdx][prop] = cv;
             renderItemsList();
         }
     };
-    window.removeRibbon = (iIdx,rIdx) => { orderItems[iIdx].colorsData.splice(rIdx,1); renderItemsList(); };
+    window.removeRibbon = (iIdx, rIdx) => { orderItems[iIdx].colorsData.splice(rIdx, 1); renderItemsList(); };
 
     // ---- Step content ----
     const stepPanels = [
@@ -1011,17 +1139,21 @@ function showOrderModal(order = null) {
          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
              <div class="form-group" style="margin-bottom:0;">
                  <label>Client Name</label>
-                 <input type="text" id="form-client" value="${order?.client||''}" placeholder="Full name" list="clients-datalist">
-                 <datalist id="clients-datalist">${clients.map(c=>`<option value="${c.name}">`).join('')}</datalist>
+                 <input type="text" id="form-client" value="${order?.client || ''}" placeholder="Full name" list="clients-datalist">
+                 <datalist id="clients-datalist">${clients.map(c => `<option value="${c.name}">`).join('')}</datalist>
              </div>
              <div class="form-group" style="margin-bottom:0;">
                  <label>Phone Number</label>
-                 <input type="text" id="form-phone" value="${order?.phone||''}" placeholder="06xxxxxxxx">
+                 <input type="text" id="form-phone" value="${order?.phone || ''}" placeholder="06xxxxxxxx">
              </div>
-             <div class="form-group" style="grid-column: span 2; margin-top: 10px;">
+             <div class="form-group" style="margin-bottom:0; margin-top: 10px;">
+                 <label>Total Price (DH)</label>
+                 <input type="number" id="form-price" value="${order?.price || ''}" placeholder="0.00">
+             </div>
+             <div class="form-group" style="margin-bottom:0; margin-top: 10px;">
                  <label>Current Status</label>
                  <select id="form-status">
-                    ${(STATUSES.includes(order?.status || 'To Do') ? STATUSES : [order?.status || 'To Do', ...STATUSES]).map(s => `<option value="${s}" ${ (order?.status || 'To Do') === s ? 'selected' : '' }>${s}</option>`).join('')}
+                    ${(STATUSES.includes(order?.status || 'To Do') ? STATUSES : [order?.status || 'To Do', ...STATUSES]).map(s => `<option value="${s}" ${(order?.status || 'To Do') === s ? 'selected' : ''}>${s}</option>`).join('')}
                  </select>
              </div>
          </div>`,
@@ -1034,10 +1166,10 @@ function showOrderModal(order = null) {
         // Step 2 – Design
         `<div class="wizard-section-title">Design Image</div>
          <div class="wizard-section-sub">Upload the reference or design file for this order.</div>
-         <div id="image-upload-zone" style="border:2px dashed #d1d5db;border-radius:14px;padding:40px 28px;text-align:center;cursor:pointer;background:white;transition:border-color .2s;">
+         <div id="image-upload-zone" style="border:2px dashed var(--border-color);border-radius:14px;padding:40px 28px;text-align:center;cursor:pointer;background:var(--bg-card);transition:border-color .2s;">
              ${order?.design
-                 ? `<img src="${order.design}" style="max-height:140px;border-radius:10px;">`
-                 : `<div style="color:#9ca3af;">${ICONS.upload}<p style="margin-top:12px;font-size:14px;font-weight:600;">Click to upload design image</p><p style="font-size:12px;margin-top:4px;">PNG, JPG, WEBP</p></div>`}
+            ? `<img src="${order.design}" style="max-height:140px;border-radius:10px;">`
+            : `<div style="color:var(--text-light);">${ICONS.upload}<p style="margin-top:12px;font-size:14px;font-weight:600;">Click to upload design image</p><p style="font-size:12px;margin-top:4px;">PNG, JPG, WEBP</p></div>`}
              <input type="file" id="form-design" class="hidden" accept="image/*">
          </div>`,
 
@@ -1046,19 +1178,19 @@ function showOrderModal(order = null) {
          <div class="wizard-section-sub">Where should we send it?</div>
          <div class="form-group">
              <label>Full Address</label>
-             <input type="text" id="form-address" value="${order?.address||''}" placeholder="Street, building, floor...">
+             <input type="text" id="form-address" value="${order?.address || ''}" placeholder="Street, building, floor...">
          </div>
          <div class="form-group" style="margin-bottom:0;">
              <label>Ville (City)</label>
-             <input type="text" id="form-ville" value="${order?.ville||''}" placeholder="e.g. Casablanca">
+             <input type="text" id="form-ville" value="${order?.ville || ''}" placeholder="e.g. Casablanca">
          </div>`,
     ];
 
     // ---- build modal body (progress UI + panels) ----
     const body = `
-        <div class="wizard-progress-wrap" id="wizard-progress" style="padding: 32px 32px 24px; border-bottom: 1px solid #f1f5f9; margin-bottom: 24px; background: #fafafa;">
+        <div class="wizard-progress-wrap" id="wizard-progress" style="padding: 32px 32px 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; background: var(--bg-main);">
             <div class="wizard-steps-header">
-                ${STEPS.map((s,i) => `
+                ${STEPS.map((s, i) => `
                     <div class="wizard-step-dot" id="wdot-${i}" onclick="wizNav(${i - currentStep})" style="cursor:pointer;">
                         <div class="wizard-step-circle">${s.icon}</div>
                         <div class="wizard-step-label">${s.label}</div>
@@ -1067,40 +1199,46 @@ function showOrderModal(order = null) {
             </div>
         </div>
         <form id="order-form" style="padding: 0 28px 28px;">
-            ${stepPanels.map((html,i) => `<div class="wizard-panel${i===0?' active':''}" id="wstep-${i}">${html}</div>`).join('')}
+            ${stepPanels.map((html, i) => `<div class="wizard-panel${i === 0 ? ' active' : ''}" id="wstep-${i}">${html}</div>`).join('')}
         </form>
     `;
 
     const footer = `
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px;">
             <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-            ${order ? `<button class="btn btn-danger" onclick="deleteOrder('${order.id}')" style="background: transparent; border-color: #fee2e2; color: #ef4444;">Delete Order</button>` : ''}
-            <button class="btn btn-secondary" id="wiz-back" style="display:none;" onclick="wizNav(-1)">← Back</button>
-            <button class="btn btn-primary" id="wiz-next" onclick="wizNav(1)" style="padding-left: 24px; padding-right: 24px;">Next Step →</button>
-            <button class="btn btn-primary" id="wiz-save" style="background:var(--accent-emerald); border-color:var(--accent-emerald); color: white; padding-left: 24px; padding-right: 24px;">✓ Save Changes</button>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" id="wiz-back" style="display:none; padding: 10px 14px;" onclick="wizNav(-1)">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button class="btn btn-primary" id="wiz-next" style="padding: 10px 14px;" onclick="wizNav(1)">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button class="btn btn-primary" id="wiz-save" style="background:var(--accent-emerald); border-color:var(--accent-emerald); color: white; padding-left: 24px; padding-right: 24px;">✓ Save Changes</button>
+            </div>
         </div>
     `;
 
-    openModal(title, body, footer);
+    openModal(title, body, footer, '860px', headerActions);
 
     // ---- Stepper engine ----
     const updateWizard = () => {
         const total = STEPS.length;
 
-        STEPS.forEach((_,i) => {
+        STEPS.forEach((_, i) => {
             const dot = document.getElementById(`wdot-${i}`);
             dot.className = 'wizard-step-dot' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
         });
 
-        document.querySelectorAll('.wizard-panel').forEach((p,i) => {
+        document.querySelectorAll('.wizard-panel').forEach((p, i) => {
             p.classList.toggle('active', i === currentStep);
         });
 
-        document.getElementById('wiz-back').style.display  = currentStep > 0 ? '' : 'none';
-        document.getElementById('wiz-next').style.display  = currentStep < total-1 ? '' : 'none';
+        document.getElementById('wiz-back').style.display = currentStep > 0 ? 'flex' : 'none';
+        document.getElementById('wiz-next').style.display = currentStep < total - 1 ? 'flex' : 'none';
+        document.getElementById('wiz-save').style.display = currentStep === total - 1 ? 'flex' : 'none';
 
-        if (currentStep === 2) renderItemsList();
-        if (currentStep === 3) {
+        if (currentStep === 1) renderItemsList();
+        if (currentStep === 2) {
             document.getElementById('image-upload-zone').addEventListener('click', () => document.getElementById('form-design').click());
             document.getElementById('form-design').addEventListener('change', (e) => {
                 const file = e.target.files[0];
@@ -1116,29 +1254,30 @@ function showOrderModal(order = null) {
     };
 
     window.wizNav = (dir) => {
-        currentStep = Math.max(0, Math.min(STEPS.length-1, currentStep + dir));
+        currentStep = Math.max(0, Math.min(STEPS.length - 1, currentStep + dir));
         updateWizard();
-        document.querySelector('.modal')?.scrollTo({top:0,behavior:'smooth'});
+        document.querySelector('.modal')?.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Save
     document.getElementById('wiz-save').addEventListener('click', async () => {
         const colorsStr = orderItems.map(item => {
-            if (!['Sachet sylable','Sachet non tissé (avec poignet)','Sachet non tissé (sans poignet)'].includes(item.article))
-                return (item.colorsData||[]).map(c=>c.name).join(', ');
+            if (!['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(item.article))
+                return (item.colorsData || []).map(c => c.name).join(', ');
             return item.sachetData?.color || '';
-        }).filter(s=>s).join(' | ');
+        }).filter(s => s).join(' | ');
 
         const quantitiesStr = orderItems.map(item => {
-            if (!['Sachet sylable','Sachet non tissé (avec poignet)','Sachet non tissé (sans poignet)'].includes(item.article))
-                return (item.colorsData||[]).map(c=>`${c.name}: ${c.qty}`).join(', ');
-            return `${item.article}: ${item.sachetData?.qty||0} pcs`;
+            if (!['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(item.article))
+                return (item.colorsData || []).map(c => `${c.name}: ${c.qty}`).join(', ');
+            return `${item.article}: ${item.sachetData?.qty || 0} pcs`;
         }).join(' | ');
 
         const newOrder = {
             id: order?.id || uid(),
             client: document.getElementById('form-client').value,
             phone: document.getElementById('form-phone').value,
+            price: parseFloat(document.getElementById('form-price').value) || 0,
             address: document.getElementById('form-address').value,
             ville: document.getElementById('form-ville').value,
             items: orderItems,
@@ -1147,23 +1286,87 @@ function showOrderModal(order = null) {
             quantities: quantitiesStr,
             design: window.tempImage || order?.design || null,
             status: document.getElementById('form-status').value || 'To Do',
-            date: order?.date || new Date().toISOString().slice(0,10)
+            date: order?.date || new Date().toISOString().slice(0, 10)
         };
 
         const action = order ? 'updateOrder' : 'addOrder';
-        const result = await callSheets({ action, order: newOrder });
-        
+        const result = await callSheets({
+            action,
+            order: newOrder
+        });
+
         if (result && result.success) {
-            if (order) orders = orders.map(o => o.id === order.id ? newOrder : o);
-            else orders.unshift(newOrder);
+            if (order) {
+                orders = orders.map(o => o.id === order.id ? newOrder : o);
+                showToast('Order updated successfully', 'success');
+            } else {
+                orders.unshift(newOrder);
+                showToast('Order created successfully', 'success');
+                // Play notification sound for new order
+                const notification = document.getElementById('order-notification');
+                if (notification) {
+                    notification.volume = 1.0;
+                    notification.play().catch(e => console.error("Notification play failed:", e));
+                }
+
+                // Automatic recap for new orders using EmailJS
+                window.sendEmailRecap(newOrder.id, true);
+            }
             renderView();
             closeModal();
         } else {
-            alert("Error: could not save to Google Sheets.");
+            showToast('Error saving to Google Sheets', 'error');
         }
     });
 
     updateWizard();
+}
+
+window.sendEmailRecap = async function (id, isAuto = false) {
+    const order = orders.find(o => o.id === id);
+    if (!order) return;
+
+    if (!isAuto) showLoading(true);
+
+    try {
+        if (typeof emailjs === 'undefined') {
+            throw new Error("EmailJS not loaded");
+        }
+
+        const templateParams = {
+            order_id: order.id,
+            client_name: order.client,
+            phone: formatPhone(order.phone),
+            address: order.address,
+            city: order.ville,
+            article: order.article,
+            price: order.price,
+            colors: order.colors,
+            quantities: order.quantities,
+            status: order.status,
+            date: order.date,
+            to_email: RECAP_EMAIL
+        };
+
+        const response = await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams
+        );
+
+        console.log("EmailJS Success:", response.status, response.text);
+        if (!isAuto) alert("Recap sent to " + RECAP_EMAIL);
+        else {
+            console.log("Automatic recap sent successfully.");
+            // We don't alert for auto-send to avoid multiple popups, 
+            // but we could show a small toast if needed.
+        }
+    } catch (error) {
+        console.error("EmailJS Error:", error);
+        if (!isAuto) alert("Failed to send recap: " + (error.text || error.message || "Unknown error"));
+    } finally {
+        if (!isAuto) showLoading(false);
+    }
 }
 
 function showTaskModal(task = null) {
@@ -1192,7 +1395,7 @@ function showTaskModal(task = null) {
         </div>
     `;
     const footer = `<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="save-task-btn">Save Task</button>`;
-    
+
     openModal(title, body, footer);
 
     document.getElementById('save-task-btn').addEventListener('click', () => {
@@ -1210,62 +1413,90 @@ function showTaskModal(task = null) {
     });
 }
 
-function showInvoice(id) {
+window.showInvoice = function (id) {
     const order = orders.find(o => o.id === id);
+    if (!order) return;
     const title = 'Order Details #' + order.id.toUpperCase();
     const body = `
-        <div style="text-align: left; margin-bottom: 24px; border-bottom: 1px solid #f3f4f6; padding-bottom: 16px;">
+        <div style="text-align: left; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
             <img src="img/Wecraft Final Logos.png" alt="wecraft" style="margin: 0 0 12px; width: 160px; height: 70px; object-fit: contain; display: block;">
             <p class="text-xs" style="color: var(--text-light)">Generated on ${new Date().toLocaleDateString()}</p>
         </div>
         <div class="mb-4">
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Client</span><span class="font-bold">${order.client}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Phone</span><span>${order.phone}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Article</span><span>${order.article}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Ville</span><span>${order.ville}</span></div>
+            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Client</span><span class="font-bold" style="color: var(--text-main);">${order.client}</span></div>
+            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Phone</span><span style="color: var(--text-main); direction: ltr; unicode-bidi: isolate;">${formatPhone(order.phone)}</span></div>
+            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Article</span><span style="color: var(--text-main);">${order.article}</span></div>
+            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Ville</span><span style="color: var(--text-main);">${order.ville}</span></div>
+            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Total Price</span><span style="color: var(--primary); font-weight: 800;">${formatCurrency(order.price || 0)}</span></div>
             
-            <div style="margin-top: 16px; padding-top: 16px; border-top: 1.5px solid #000;">
-                <h4 style="font-size: 11px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.1em; color: #000; text-transform: uppercase;">Order Items</h4>
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1.5px solid var(--text-main);">
+                <h4 style="font-size: 11px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.1em; color: var(--text-main); text-transform: uppercase;">Order Items</h4>
                 ${(order.items || [{ article: order.article, colorsData: order.colorsData, sachetData: order.sachetData }]).map((item, i) => {
-                    const isRibbon = item.article === 'Ruban';
-                    return `
-                        <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #e5e7eb;">
+        const isRibbon = item.article === 'Ruban';
+        return `
+                        <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);">
                             <div class="flex justify-between items-center mb-2">
-                                <span style="font-weight: 900; font-size: 14px; color: var(--indigo-primary);">${item.article}</span>
-                                <span style="font-size: 11px; padding: 2px 8px; background: #f1f5f9; border-radius: 4px; font-weight: 600;">#${i + 1}</span>
+                                <span style="font-weight: 900; font-size: 14px; color: var(--primary);">${item.article}</span>
+                                <span style="font-size: 11px; padding: 2px 8px; background: var(--surface-muted); border: 1px solid var(--border-color); border-radius: 4px; font-weight: 600; color: var(--text-muted);">#${i + 1}</span>
                             </div>
-                            ${isRibbon ? 
-                                (item.colorsData || []).map(c => `
+                            ${isRibbon ?
+                (item.colorsData || []).map(c => `
                                     <div class="flex items-center justify-between py-1">
                                         <div class="flex items-center gap-2">
-                                            <div style="width: 10px; height: 10px; border-radius: 50%; background: ${c.hex}; border: 1px solid #ddd;"></div>
-                                            <span style="font-size: 12px;">${c.name} x <strong>${c.qty}</strong></span>
+                                            <div style="width: 10px; height: 10px; border-radius: 50%; background: ${c.hex}; border: 1px solid var(--border-color);"></div>
+                                            <span style="font-size: 12px; color: var(--text-main);">${c.name} x <strong>${c.qty}</strong></span>
                                         </div>
                                         <span style="font-size: 11px; color: var(--accent-blue);">Print: ${c.printColor || 'Std'}</span>
                                     </div>
                                 `).join('') :
-                                `<div style="font-size: 12px; line-height: 1.6;">
+                `<div style="font-size: 12px; line-height: 1.6; color: var(--text-main);">
                                     <div class="flex justify-between"><span>Color:</span><strong>${item.sachetData?.color || '-'}</strong></div>
                                     <div class="flex justify-between"><span>Size:</span><strong>${item.sachetData?.size || '-'}</strong></div>
                                     <div class="flex justify-between"><span>Qty:</span><strong>${item.sachetData?.qty || '-'} pcs</strong></div>
                                     <div class="flex justify-between"><span>Print:</span><strong style="color: var(--accent-blue)">${item.sachetData?.print || '-'}</strong></div>
                                 </div>`
-                            }
+            }
                         </div>
                     `;
-                }).join('')}
+    }).join('')}
             </div>
 
-            <div class="py-2" style="border-top: 1px solid #f9f9f9; margin-top: 8px;">
+            <div class="py-2" style="border-top: 1px solid var(--border-color); margin-top: 8px;">
                 <span style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 4px;">Address:</span>
-                <span style="font-size: 13px;">${order.address}</span>
+                <span style="font-size: 13px; color: var(--text-main);">${order.address}</span>
             </div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Date</span><span>${order.date}</span></div>
+            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Date</span><span style="color: var(--text-main);">${order.date}</span></div>
         </div>
     `;
+    const articlesMessage = (order.items || [{ article: order.article, colorsData: order.colorsData, sachetData: order.sachetData }]).map(item => {
+        if (item.article === 'Ruban') {
+            return (item.colorsData || []).map(c => {
+                const pColor = {
+                    'White': 'blanche', 'Black': 'noire', 'Gold': 'doré', 'Silver': 'argenté',
+                    'Bleu': 'bleue', 'Red': 'rouge', 'Pink': 'rose', 'Yellow': 'jaune'
+                }[c.printColor] || c.printColor;
+                return ` - ${c.qty} Rubans ${c.name} impression ${pColor}`;
+            }).join('\n');
+        } else {
+            const pColor = {
+                'White': 'blanche', 'Black': 'noire', 'Gold': 'doré', 'Silver': 'argenté',
+                'Bleu': 'bleue', 'Red': 'rouge', 'Pink': 'rose', 'Yellow': 'jaune'
+            }[item.sachetData?.print] || item.sachetData?.print;
+            return ` - ${item.sachetData?.qty || 0} Sachet ${item.sachetData?.color || ''} ${item.sachetData?.size || ''} Impression ${pColor}`;
+        }
+    }).join('\n');
+
+    const whatsappText = `Client : ${order.client}
+Téléphone : ${formatPhone(order.phone)}
+Adresse : ${order.address}
+Ville : ${order.ville}
+Articles : 
+${articlesMessage}
+Total : ${order.price || 0}dh`;
+
     const footer = `
         <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-        <a href="https://wa.me/212${order.phone ? order.phone.slice(1) : ''}?text=Hello ${order.client}, your order for ${order.article} (${order.colors}) is now ${order.status}." class="btn btn-success" target="_blank">${ICONS.whatsapp} Share Status</a>
+        <a href="${getWhatsAppLink(order.phone)}?text=${encodeURIComponent(whatsappText)}" class="btn btn-success" target="_blank">${ICONS.whatsapp} Share Status</a>
     `;
     openModal(title, body, footer);
 }
@@ -1279,7 +1510,7 @@ function showClientModal(client = null) {
         <div class="form-group"><label>Notes</label><textarea id="client-notes">${client?.notes || ''}</textarea></div>
     `;
     const footer = `<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="save-client-btn">Save Client</button>`;
-    
+
     openModal(title, body, footer);
 
     document.getElementById('save-client-btn').addEventListener('click', () => {
@@ -1314,12 +1545,12 @@ function showColorPicker(onSelect, initialSelectedNames = []) {
                 <div class="modal-body">
                     <div style="position: relative; margin-bottom: 24px;">
                         <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-light)">${ICONS.search}</span>
-                        <input type="text" id="color-search" placeholder="Search for a color..." style="padding-left: 44px; height: 50px; font-size: 16px;">
+                        <input type="text" id="color-search" placeholder="Search for a color..." style="padding-left: 44px; height: 50px; font-size: 16px; background: var(--bg-main); color: var(--text-main); border: 1.5px solid var(--border-color);">
                     </div>
                     <div id="color-grid" class="color-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; max-height: 550px; overflow-y: auto; padding: 4px;">
                         ${RUBANS_COULEURS.map(c => `
-                            <div class="color-option" data-name="${c.name}" style="cursor: pointer; padding: 16px; border-radius: 16px; border: 1px solid #f3f4f6; display: flex; flex-direction: column; align-items: center; gap: 12px; transition: all 0.2s; background: white; position: relative;">
-                                <div style="width: 48px; height: 48px; border-radius: 50%; background: ${c.hex}; border: 1px solid #eee; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
+                            <div class="color-option" data-name="${c.name}" style="cursor: pointer; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 12px; transition: all 0.2s; background: var(--bg-card); position: relative;">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: ${c.hex}; border: 1px solid var(--border-color); flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
                                 <div style="font-size: 14px; font-weight: 600; text-align: center; color: var(--text-main);">${c.name}</div>
                                 <div class="check-mark" style="position: absolute; top: 8px; right: 8px; background: #10b981; color: white; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 12px;">✓</div>
                             </div>
@@ -1342,31 +1573,31 @@ function showColorPicker(onSelect, initialSelectedNames = []) {
             });
         };
     }
-    
+
     pickerOverlay.classList.add('active');
-    
+
     const updateUI = () => {
         pickerOverlay.querySelectorAll('.color-option').forEach(opt => {
             const name = opt.dataset.name;
             const isSelected = initialSelectedNames.includes(name);
-            opt.style.background = isSelected ? '#f0fdf4' : 'white';
-            opt.style.borderColor = isSelected ? '#10b981' : '#f3f4f6';
+            opt.style.background = isSelected ? 'var(--stat-green-bg)' : 'var(--bg-card)';
+            opt.style.borderColor = isSelected ? 'var(--stat-green-text)' : 'var(--border-color)';
             opt.querySelector('.check-mark').style.display = isSelected ? 'flex' : 'none';
         });
     };
     updateUI();
-    
+
     const close = () => pickerOverlay.classList.remove('active');
     pickerOverlay.querySelector('#close-picker').onclick = close;
     pickerOverlay.querySelector('#done-picker').onclick = close;
-    pickerOverlay.onclick = (e) => { if(e.target === pickerOverlay) close(); };
-    
+    pickerOverlay.onclick = (e) => { if (e.target === pickerOverlay) close(); };
+
     pickerOverlay.querySelectorAll('.color-option').forEach(opt => {
         opt.onclick = () => {
             const name = opt.dataset.name;
             const color = RUBANS_COULEURS.find(c => c.name === name);
             const index = initialSelectedNames.indexOf(name);
-            
+
             if (index === -1) {
                 initialSelectedNames.push(name);
                 onSelect(color, true);
@@ -1379,11 +1610,17 @@ function showColorPicker(onSelect, initialSelectedNames = []) {
     });
 }
 
-function openModal(title, body, footer, maxWidth = '500px') {
+function openModal(title, body, footer, maxWidth = '500px', headerActions = '') {
     document.getElementById('modal-title').textContent = title;
     document.getElementById('modal-body').innerHTML = body;
     document.getElementById('modal-footer').innerHTML = footer;
-    document.getElementById('modal-footer').style.display = footer ? 'block' : 'none';
+    document.getElementById('modal-footer').style.display = footer ? 'flex' : 'none';
+
+    const actionContainer = document.getElementById('modal-header-actions');
+    if (actionContainer) {
+        actionContainer.innerHTML = headerActions;
+    }
+
     document.querySelector('#modal-overlay .modal').style.maxWidth = maxWidth;
     document.getElementById('modal-overlay').classList.add('active');
     window.tempImage = null;
@@ -1394,17 +1631,24 @@ function closeModal() {
 }
 
 // Global scope delete helper
-window.deleteOrder = async (id) => {
-    if (confirm('Are you sure you want to delete this order?')) {
-        const result = await callSheets({ action: 'deleteOrder', id: id });
-        if (result && result.success) {
-            orders = orders.filter(o => o.id !== id);
-            renderView();
-            closeModal();
-        } else {
-            alert("Error deleting from Sheets.");
+window.deleteOrder = (id) => {
+    const order = orders.find(o => o.id === id);
+    showConfirm({
+        title: 'Delete Order',
+        text: `Are you sure you want to delete the order for <strong>${order?.client || 'this client'}</strong>? This action cannot be undone.`,
+        confirmText: 'Delete Order',
+        onConfirm: async () => {
+            const result = await callSheets({ action: 'deleteOrder', id: id });
+            if (result && result.success) {
+                orders = orders.filter(o => o.id !== id);
+                renderView();
+                closeModal();
+                showToast('Order deleted successfully', 'success');
+            } else {
+                showToast('Error deleting from Sheets', 'error');
+            }
         }
-    }
+    });
 }
 
 // --- KANBAN DRAG & DROP ---
@@ -1455,7 +1699,7 @@ function setupKanbanListeners() {
     });
 }
 
-window.downloadOrderImage = function(url, filename) {
+window.downloadOrderImage = function (url, filename) {
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
@@ -1470,7 +1714,7 @@ function showOrderDetailsModal(order) {
     const sc = isDarkMode
         ? { bg: "rgba(217, 15, 15, 0.22)", text: "#ffdede", dot: "#f98080" }
         : baseStatus;
-    
+
     const items = order.items && order.items.length > 0 ? order.items : [{
         article: order.article,
         colorsData: order.colorsData || [],
@@ -1542,8 +1786,8 @@ function showOrderDetailsModal(order) {
         `;
     }
 
-    const safePhone = String(order.phone).startsWith('0') ? String(order.phone).slice(1) : order.phone;
-    const phoneHtml = order.phone ? `<a href="https://wa.me/212${safePhone}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px;">${order.phone} <svg width="14" height="14" viewBox="0 0 24 24" fill="#10b981"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>` : '-';
+    const formattedPhone = formatPhone(order.phone);
+    const phoneHtml = order.phone ? `<a href="${getWhatsAppLink(order.phone)}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px; direction: ltr; unicode-bidi: isolate;">${formattedPhone} <svg width="14" height="14" viewBox="0 0 24 24" fill="#10b981"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>` : '-';
 
     const body = `
         <style>
@@ -1624,7 +1868,19 @@ function showOrderDetailsModal(order) {
         </div>
     `;
 
-    openModal('Order Details', body, '', '900px');
+    const footer = `
+        <div style="display: flex; justify-content: flex-end; width: 100%; gap: 10px;">
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            <button class="btn btn-primary" onclick="window.sendEmailRecap('${order.id}')" style="background: var(--primary); color: white; display: flex; align-items: center; gap: 8px;">
+                ${ICONS.mail} Send Recap
+            </button>
+            <button class="btn btn-primary" onclick="showInvoice('${order.id}')" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;">
+                ${ICONS.invoice} View Invoice
+            </button>
+        </div>
+    `;
+
+    openModal('Order Details', body, footer, '900px');
 }
 
 // Initialize App

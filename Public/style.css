@@ -644,8 +644,8 @@ input:focus, select:focus, textarea:focus {
 
 /* Items section in order form */
 .order-item-card {
-  background: #f8fafc;
-  border: 1.5px solid #e5e7eb;
+  background: var(--surface-muted);
+  border: 1.5px solid var(--border-color);
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 14px;
@@ -673,7 +673,7 @@ input:focus, select:focus, textarea:focus {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.6);
   backdrop-filter: blur(4px);
   display: none;
   align-items: center;
@@ -877,8 +877,28 @@ input:focus, select:focus, textarea:focus {
   #sidebar-overlay.active {
     display: block;
   }
+  
+  header {
+    padding: 0 12px;
+    height: 60px;
+  }
+
+  #toggle-sidebar {
+    display: flex !important;
+    background: var(--surface-muted);
+    color: var(--primary);
+    border: 1.5px solid var(--border-color);
+    margin-right: 8px;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  #view-title {
+    font-size: 16px !important;
+  }
+
   .content-area {
-    padding: 20px;
+    padding: 20px 16px;
   }
   .top-center {
     display: none;
@@ -972,7 +992,7 @@ html[data-theme="dark"] .inventory-scroll::-webkit-scrollbar-thumb {
   position: absolute;
   top: 18px; left: 12%; right: 12%;
   height: 2px;
-  background: #f1f5f9;
+  background: var(--border-color);
   z-index: 0;
 }
 .wizard-step-dot {
@@ -987,18 +1007,18 @@ html[data-theme="dark"] .inventory-scroll::-webkit-scrollbar-thumb {
 .wizard-step-circle {
   width: 36px; height: 36px;
   border-radius: 50%;
-  background: #e5e7eb;
-  color: #9ca3af;
+  background: var(--surface-strong);
+  color: var(--text-light);
   display: flex; align-items: center; justify-content: center;
   font-size: 14px; font-weight: 800;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   transition: all 0.3s ease;
 }
 .wizard-step-dot.active .wizard-step-circle {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
+  background: var(--primary);
+  border-color: var(--primary);
   color: white;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+  box-shadow: 0 0 0 4px rgba(217, 15, 15, 0.15);
 }
 .wizard-step-dot.done .wizard-step-circle {
   background: var(--accent-emerald);
@@ -1007,16 +1027,16 @@ html[data-theme="dark"] .inventory-scroll::-webkit-scrollbar-thumb {
 }
 .wizard-step-label {
   font-size: 11px; font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-light);
   text-transform: uppercase; letter-spacing: 0.08em;
   white-space: nowrap;
   transition: all 0.3s;
 }
-.wizard-step-dot.active .wizard-step-label { color: var(--accent-blue); }
+.wizard-step-dot.active .wizard-step-label { color: var(--primary); }
 .wizard-step-dot.done .wizard-step-label { color: var(--accent-emerald); }
 .wizard-progress-bar-wrap {
   height: 5px;
-  background: #e5e7eb;
+  background: var(--border-color);
   border-radius: 99px;
   margin: 12px 0 4px;
   overflow: hidden;
@@ -1042,11 +1062,146 @@ html[data-theme="dark"] .inventory-scroll::-webkit-scrollbar-thumb {
   from { opacity: 0; transform: translateX(16px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-.wizard-section-title {
-  font-size: 22px; font-weight: 800;
-  color: var(--text-main); margin-bottom: 4px;
+
+
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
 }
-.wizard-section-sub {
-  font-size: 13px; color: var(--text-muted);
-  margin-bottom: 24px;
+
+.toast {
+  min-width: 280px;
+  max-width: 400px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1), toast-out 0.4s 4.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-success { border-left: 4px solid var(--stat-green-text); }
+.toast-error { border-left: 4px solid var(--primary); }
+.toast-info { border-left: 4px solid var(--stat-indigo-text); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(40px) scale(0.9); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to { opacity: 0; transform: translateX(40px) scale(0.9); }
+}
+
+/* Custom Confirmation Modal Styling */
+.confirm-modal-body {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.confirm-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.confirm-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.confirm-text {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Collapsible Wizard Items */
+.order-item-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.order-item-card.collapsed {
+  padding: 12px 20px;
+}
+
+.order-item-card.collapsed .item-expanded-content {
+  display: none;
+}
+
+.item-collapsed-summary {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.order-item-card.collapsed .item-collapsed-summary {
+  display: flex;
+}
+
+.order-item-card.collapsed .order-item-number {
+  display: none;
+}
+
+.btn-dashed {
+  border: 1.5px dashed var(--border-color) !important;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+}
+
+.btn-dashed:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+  background: color-mix(in srgb, var(--primary) 5%, transparent) !important;
+}
+
+/* Modal Header Actions */
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-action-btn {
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  background: transparent;
+  border: none;
+}
+
+.header-action-btn:hover {
+  background: var(--surface-muted);
+  color: var(--text-main);
+}
+
+.header-action-btn.danger:hover {
+  color: var(--primary);
+  background: #fee2e2;
 }

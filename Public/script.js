@@ -18,8 +18,8 @@ const ICONS = {
     bag: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
     money: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,
     invoice: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
-    table_view: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18M10 3v18M3 3h18v18H3z"/></svg>`,
-    kanban_view: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="11" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>`,
+    table_view: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`,
+    kanban_view: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>`,
     phone: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.81.37 1.6.72 2.33a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.75-1.29a2 2 0 0 1 2.11-.45c.73.35 1.52.6 2.33.72A2 2 0 0 1 22 16.92z"></path></svg>`,
     mail: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
     sun: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>`,
@@ -42,16 +42,17 @@ const EMAILJS_TEMPLATE_ID = "template_1m9z65r"; // Replace with your Template ID
 })();
 
 const STATUSES = ["To Do", "Doing", "Done"];
+// Consolidated status colors compliant with Red Rarity Rule (≤10% red per screen)
 const STATUS_COLORS = {
     "To Do": { bg: "#ffe5e5", text: "#8c0909", dot: "#f54d4d" },
     "Doing": { bg: "#ffd6d6", text: "#8c0909", dot: "#d90f0f" },
     "Done": { bg: "#fcb3b3", text: "#660606", dot: "#b30c0c" },
     "New": { bg: "#ffe5e5", text: "#8c0909", dot: "#f54d4d" },
     "Design Ready": { bg: "#ffd6d6", text: "#8c0909", dot: "#d90f0f" },
-    "In Production": { bg: "#fcb3b3", text: "#660606", dot: "#b30c0c" },
+    "In Production": { bg: "#ffd6d6", text: "#8c0909", dot: "#d90f0f" },
     "Ready": { bg: "#fcb3b3", text: "#660606", dot: "#b30c0c" },
-    "Delivered": { bg: "#ffe5e5", text: "#8c0909", dot: "#f54d4d" },
-    "Cancelled": { bg: "#f98080", text: "#400303", dot: "#8c0909" },
+    "Delivered": { bg: "#fcb3b3", text: "#660606", dot: "#b30c0c" },
+    "Cancelled": { bg: "#f5f5f5", text: "#666666", dot: "#999999" }
 };
 const TASK_STATUSES = ["To Do", "Doing", "Done"];
 const TASK_COLORS = {
@@ -107,7 +108,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxpjR4S7PXwxTo81GfMZofK
 // --- INITIAL DATA ---
 let orders = [];
 let tasks = [];
-let clients = [];
+let clients = JSON.parse(localStorage.getItem('wecraft-clients')) || [];
 let stocks = JSON.parse(localStorage.getItem('wecraft-stocks')) || {
     "Ruban": 0,
     "Sachet sylable": 0,
@@ -118,11 +119,65 @@ function saveStocks() {
     localStorage.setItem('wecraft-stocks', JSON.stringify(stocks));
 }
 
+function saveClients() {
+    localStorage.setItem('wecraft-clients', JSON.stringify(clients));
+}
+
+// Maps statuses to their badge class and icon label
+const STATUS_BADGE_CONFIG = {
+    "To Do": { class: "todo", label: "To Do", icon: "◯" },
+    "Doing": { class: "doing", label: "In Progress", icon: "⬤" },
+    "Done": { class: "done", label: "Done", icon: "✓" },
+    "New": { class: "todo", label: "New", icon: "◯" },
+    "Design Ready": { class: "doing", label: "Design Ready", icon: "⬤" },
+    "In Production": { class: "doing", label: "In Production", icon: "⬤" },
+    "Ready": { class: "done", label: "Ready", icon: "✓" },
+    "Delivered": { class: "done", label: "Delivered", icon: "✓" },
+    "Cancelled": { class: "cancelled", label: "Cancelled", icon: "✕" }
+};
+
+function getStatusBadgeHTML(status) {
+    const config = STATUS_BADGE_CONFIG[status] || { class: "todo", label: status, icon: "◯" };
+    return `<span class="status-badge ${config.class}" title="${config.label}"><span class="status-badge-dot"></span>${status}</span>`;
+}
+
+// --- LOADING & EMPTY STATES ---
+function getLoadingCardHTML() {
+    return `
+        <div class="skeleton-card">
+            <div class="skeleton skeleton-line full" style="height: 20px; margin-bottom: 16px;"></div>
+            <div class="skeleton skeleton-line full" style="height: 12px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-line half" style="height: 12px;"></div>
+        </div>
+    `;
+}
+
+function getLoadingTableHTML() {
+    let html = `<div class="table-wrapper"><table><thead><tr><th colspan="8" style="padding: 20px; text-align: center;">Loading...</th></tr></thead><tbody>`;
+    for (let i = 0; i < 5; i++) {
+        html += `<tr><td colspan="8"><div style="display: flex; gap: 12px; padding: 12px;"><div class="skeleton" style="width: 40px; height: 20px;"></div><div class="skeleton" style="flex: 1; height: 20px;"></div></div></td></tr>`;
+    }
+    html += `</tbody></table></div>`;
+    return html;
+}
+
+function getEmptyStateHTML(title, message, icon = '📭') {
+    return `
+        <div class="empty-state">
+            <div class="empty-state-icon">${icon}</div>
+            <div class="empty-state-title">${title}</div>
+            <div class="empty-state-desc">${message}</div>
+        </div>
+    `;
+}
+
 // --- STATE ---
 let currentView = 'dashboard';
 let isSidebarCollapsed = false;
 let ordersFilter = { search: '', status: '', city: '' };
+let clientsFilter = { search: '' };
 let ordersViewMode = 'table'; // 'table' | 'kanban'
+let selectedOrderIds = [];
 const THEME_STORAGE_KEY = 'wecraft-theme';
 
 function getInitialTheme() {
@@ -150,6 +205,21 @@ function updateThemeToggleIcon(theme) {
 const uid = () => Math.random().toString(36).slice(2, 9);
 const formatCurrency = (val) => Number(val).toLocaleString() + ' MAD';
 
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString;
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    } catch (e) {
+        return dateString;
+    }
+};
+
 const formatPhone = (phone) => {
     if (!phone) return '';
     let p = String(phone).trim();
@@ -162,6 +232,11 @@ const getWhatsAppLink = (phone) => {
     let p = formatPhone(phone);
     if (p.startsWith('0')) p = p.slice(1);
     return `https://wa.me/212${p}`;
+};
+
+const capitalize = (str) => {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
 async function sheetsAction(action, payload = {}) {
@@ -252,20 +327,20 @@ function showConfirm({ title, text, confirmText = 'Delete', cancelText = 'Cancel
     const body = `
         <div class="confirm-modal-body">
             <div class="confirm-icon-wrap">
-                <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
-            <div class="confirm-title">${title}</div>
-            <div class="confirm-text">${text}</div>
+            <h3 class="confirm-title">${title}</h3>
+            <p class="confirm-text">${text}</p>
         </div>
     `;
     const footer = `
-        <div style="display: flex; gap: 12px; width: 100%;">
-            <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1; justify-content: center;">${cancelText}</button>
-            <button class="btn btn-danger" id="confirm-action-btn" style="flex: 1; justify-content: center; background: #ef4444; border-color: #ef4444; color: white;">${confirmText}</button>
+        <div style="display: flex; gap: 12px; width: 100%; padding: 0 10px;">
+            <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1; justify-content: center; height: 48px;">${cancelText}</button>
+            <button class="btn btn-danger" id="confirm-action-btn" style="flex: 1; justify-content: center; height: 48px; background: var(--primary); color: white;">${confirmText}</button>
         </div>
     `;
 
-    openModal('', body, footer, '400px');
+    openModal('', body, footer, '420px');
 
     document.getElementById('confirm-action-btn').onclick = () => {
         onConfirm();
@@ -287,9 +362,9 @@ async function init() {
     }
 
     // Inject Icons
-    document.querySelectorAll('[id^="icon-"]').forEach(el => {
+    document.querySelectorAll('[id^="icon-"], [id^="tab-icon-"]').forEach(el => {
         if (el.id === 'icon-theme') return;
-        const name = el.id.replace('icon-', '');
+        const name = el.id.replace('icon-', '').replace('tab-icon-', '');
         if (ICONS[name]) el.innerHTML = ICONS[name];
     });
 
@@ -309,12 +384,11 @@ async function init() {
 }
 
 function setupEventListeners() {
-    // Navigation
-    document.querySelectorAll('.nav-link[data-view]').forEach(link => {
+    // Navigation (Sidebar & Tab Bar)
+    document.querySelectorAll('.nav-link[data-view], .tab-item[data-view]').forEach(link => {
         link.addEventListener('click', (e) => {
-            document.querySelector('.nav-link.active').classList.remove('active');
-            link.classList.add('active');
             currentView = link.dataset.view;
+            selectedOrderIds = []; // Clear selections on view switch
             renderView();
 
             // Auto-close sidebar on mobile
@@ -337,6 +411,12 @@ function setupEventListeners() {
             isSidebarCollapsed = !isSidebarCollapsed;
             sidebar.classList.toggle('collapsed', isSidebarCollapsed);
         }
+    });
+
+    // Close Sidebar (Mobile)
+    document.getElementById('close-sidebar-mobile')?.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        document.getElementById('sidebar-overlay')?.classList.remove('active');
     });
 
     // Theme Toggle
@@ -389,21 +469,22 @@ function renderView() {
 function renderDashboard(container) {
     const today = new Date().toISOString().slice(0, 10);
     const stats = [
-        { label: 'Orders Today', value: orders.filter(o => o.date === today).length, icon: 'bag', color: 'var(--stat-indigo-bg)', iconColor: 'var(--stat-indigo-text)' },
-        { label: 'To Do', value: orders.filter(o => o.status === 'To Do').length, icon: 'orders', color: 'var(--stat-amber-bg)', iconColor: 'var(--stat-amber-text)' },
-        { label: 'Doing', value: orders.filter(o => o.status === 'Doing').length, icon: 'trend', color: 'var(--stat-emerald-bg)', iconColor: 'var(--stat-emerald-text)' },
-        { label: 'Total Clients', value: clients.length, icon: 'clients', color: 'var(--stat-green-bg)', iconColor: 'var(--stat-green-text)' },
+        { label: 'Orders Today', value: orders.filter(o => o.date === today).length, icon: 'bag', delta: '+12%', dir: 'up' },
+        { label: 'Active To Do', value: orders.filter(o => o.status === 'To Do').length, icon: 'orders', delta: '-3%', dir: 'down' },
+        { label: 'In Production', value: orders.filter(o => o.status === 'Doing').length, icon: 'trend', delta: '+8%', dir: 'up' },
+        { label: 'Revenue Growth', value: '24%', icon: 'trend', delta: '+2%', dir: 'up' },
     ];
 
-    let html = `<div class="stats-grid">`;
+    let html = `<div class="kpi-grid">`;
     stats.forEach(s => {
         html += `
-            <div class="stat-card">
-                <div class="stat-icon" style="background: ${s.color}; color: ${s.iconColor}">
-                    ${ICONS[s.icon]}
+            <div class="kpi-tile">
+                <div class="kpi-header">
+                    <div class="kpi-icon">${ICONS[s.icon]}</div>
+                    <div class="kpi-delta ${s.dir}">${s.delta}</div>
                 </div>
-                <div class="stat-value">${s.value}</div>
-                <div class="stat-label">${s.label}</div>
+                <div class="kpi-value">${s.value}</div>
+                <div class="kpi-label">${s.label}</div>
             </div>
         `;
     });
@@ -411,108 +492,117 @@ function renderDashboard(container) {
 
     html += `
         <div class="dashboard-grid">
-            <div class="card">
-                <h3 class="font-bold mb-4" style="font-size: 15px;">Orders by Status</h3>
+            <div class="card" style="padding: 24px;">
+                <h3 class="headline mb-6" style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: var(--primary);">${ICONS.trend}</span>
+                    Performance Index
+                </h3>
                 <div class="progress-container">
                     ${STATUSES.map(s => {
-        const count = orders.filter(o => o.status === s).length;
-        const pct = orders.length ? Math.round((count / orders.length) * 100) : 0;
-        const c = STATUS_COLORS[s];
-        return `
-                            <div class="progress-bar-group">
-                                <div class="progress-info">
-                                    <span>${s}</span>
-                                    <span style="color: var(--text-light)">${count}</span>
+                        const count = orders.filter(o => o.status === s).length;
+                        const pct = orders.length ? Math.round((count / orders.length) * 100) : 0;
+                        return `
+                            <div class="progress-bar-group" style="margin-bottom: 20px;">
+                                <div class="progress-info" style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                    <span class="label-caps" style="color: var(--text-muted); font-size: 9px;">${s}</span>
+                                    <span class="title" style="color: var(--text-main); font-size: 13px;">${count} <small style="opacity: 0.5; font-weight: 500;">(${pct}%)</small></span>
                                 </div>
-                                <div class="progress-track">
-                                    <div class="progress-fill" style="width: ${pct}%; background: ${c.dot}"></div>
+                                <div class="progress-track" style="background: var(--bg-main); height: 6px; border-radius: 99px;">
+                                    <div class="progress-fill" style="width: ${pct}%; background: ${STATUS_COLORS[s]?.dot || 'var(--primary)'}; height: 100%; border-radius: 99px;"></div>
                                 </div>
                             </div>
                         `;
-    }).join('')}
+                    }).join('')}
                 </div>
             </div>
-            <div class="card">
-                <h3 class="font-bold mb-4" style="font-size: 15px;">Pending Tasks</h3>
-                <div class="task-list">
-                    ${tasks.filter(t => t.status !== 'Done').slice(0, 5).map(t => `
-                        <div class="flex items-center gap-3 py-3" style="border-bottom: 1px solid #f3f4f6;">
-                            <div style="width: 8px; height: 8px; border-radius: 50%; background: ${TASK_COLORS[t.status].dot}"></div>
-                            <div style="flex: 1; font-size: 14px;">${t.title}</div>
-                            <div style="font-size: 12px; color: var(--text-light)">${t.deadline}</div>
-                        </div>
-                    `).join('') || '<p style="color: var(--text-light); font-size: 14px;">No pending tasks</p>'}
-                </div>
-            </div>
-        </div>
-    `;
 
-    html += `
-        <div class="card">
-            <h3 class="font-bold mb-4" style="font-size: 15px;">Recent Orders</h3>
-            <div class="table-wrapper" style="border: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Article</th>
-                            <th>Ville</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${orders.slice(0, 5).map(o => `
-                            <tr>
-                                <td class="font-bold">${o.client}</td>
-                                <td>${o.article}</td>
-                                <td>${o.ville}</td>
-                                <td>${renderBadge(o.status)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div style="padding: 24px 24px 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="headline" style="font-size: 16px;">Command List</h3>
+                    <button class="btn btn-icon" style="background: var(--bg-main); border-radius: 50%;" title="View all orders" onclick="document.querySelector('[data-view=orders]').click()">
+                        ${ICONS.eye}
+                    </button>
+                </div>
+                <div class="command-list">
+                    ${orders.filter(o => o.status === 'To Do').slice(0, 5).map(o => `
+                        <div class="command-item">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border);">
+                                <span style="font-size: 10px; font-weight: 800; color: var(--primary);">#${o.id.slice(-2).toUpperCase()}</span>
+                            </div>
+                            <div class="command-info">
+                                <div class="command-title">${o.client}</div>
+                                <div class="command-meta">${o.article} • ${o.ville}</div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <a href="${getWhatsAppLink(o.phone)}" target="_blank" class="btn-icon" style="padding: 4px 12px; color: #10b981; background: transparent;" title="Chat on WhatsApp">
+                                    ${ICONS.whatsapp}
+                                </a>
+                                <div class="command-actions">
+                                    <button class="btn-icon view-order" data-id="${o.id}" style="padding: 4px;">${ICONS.eye}</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') || '<p style="padding: 24px; text-align: center; color: var(--text-light);">System idle. No "To Do" orders.</p>'}
+                </div>
+                <div style="padding: 16px; background: var(--bg-main); border-top: 1px solid var(--border); text-align: center;">
+                    <button class="btn" style="font-size: 12px; color: var(--text-muted); background: none;" onclick="document.querySelector('[data-view=orders]').click()">See Entire Ledger →</button>
+                </div>
             </div>
         </div>
     `;
 
     container.innerHTML = html;
+
+    // Re-attach listeners
+    container.querySelectorAll('.view-order').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const order = orders.find(o => o.id === id);
+            if (order) showOrderDetailsModal(order);
+        });
+    });
 }
 
 function renderOrders(container) {
     const filtered = orders.filter(o => {
         const q = ordersFilter.search.toLowerCase();
-        return (!q || o.client.toLowerCase().includes(q) || (o.article && o.article.toLowerCase().includes(q))) &&
-            (!ordersFilter.status || o.status === ordersFilter.status) &&
-            (!ordersFilter.city || (o.ville && o.ville.toLowerCase().includes(ordersFilter.city.toLowerCase())));
+        return (!q || o.client.toLowerCase().includes(q) || (o.article && o.article.toLowerCase().includes(q)) || (o.ville && o.ville.toLowerCase().includes(q))) &&
+            (!ordersFilter.status || o.status === ordersFilter.status);
     });
 
     let html = `
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <p class="text-sm" style="color: var(--text-muted)">${filtered.length} total orders</p>
+        <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+            <div class="flex items-center gap-4">
+                <h1 class="headline" style="font-size: 22px;">Orders</h1>
+                <span class="badge hide-mobile" style="background: var(--surface-muted); color: var(--text-muted);">${filtered.length} Total</span>
             </div>
-            <div class="flex gap-2">
-                <div class="flex orders-view-toggle">
-                    <button class="btn-icon orders-view-btn ${ordersViewMode === 'table' ? 'active' : ''}" id="view-table">${ICONS.table_view} Table</button>
-                    <button class="btn-icon orders-view-btn ${ordersViewMode === 'kanban' ? 'active' : ''}" id="view-kanban">${ICONS.kanban_view} Kanban</button>
+            <div class="flex gap-4">
+                <div class="segmented-control">
+                    <button class="segmented-btn ${ordersViewMode === 'table' ? 'active' : ''}" id="view-table" title="Table View">
+                        <span class="icon">${ICONS.table_view}</span>
+                        <span>Table</span>
+                    </button>
+                    <button class="segmented-btn ${ordersViewMode === 'kanban' ? 'active' : ''}" id="view-kanban" title="Kanban View">
+                        <span class="icon">${ICONS.kanban_view}</span>
+                        <span>Kanban</span>
+                    </button>
                 </div>
-                <button class="btn btn-primary orders-new-btn" id="add-order-btn">${ICONS.plus} New Order</button>
+                <button class="btn btn-primary" id="add-order-btn" style="padding: 10px 20px;">
+                    <span class="icon">${ICONS.plus}</span>
+                    <span>New Order</span>
+                </button>
             </div>
         </div>
 
-        <div class="flex gap-3 mb-4">
-            <div style="position: relative; flex: 1; max-width: 300px;">
-                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light)">${ICONS.search}</span>
-                <input type="text" id="order-search" placeholder="Search orders..." value="${ordersFilter.search}" style="padding-left: 36px;">
+        <div class="flex gap-3" style="margin-bottom: var(--space-lg);">
+            <div style="position: relative; flex: 1;">
+                <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none;">${ICONS.search}</span>
+                <input type="text" id="order-search" placeholder="Search orders..." value="${ordersFilter.search}" style="padding-left: 40px; height: 42px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
             </div>
-            <select id="order-status-filter" style="width: auto; min-width: 140px;">
+            <select id="order-status-filter" style="width: auto; min-width: 160px; height: 42px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); font-weight: 700;">
                 <option value="">All Statuses</option>
                 ${STATUSES.map(s => `<option value="${s}" ${ordersFilter.status === s ? 'selected' : ''}>${s}</option>`).join('')}
             </select>
-            <div style="position: relative; flex: 1; max-width: 200px;">
-                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light)">${ICONS.search}</span>
-                <input type="text" id="order-city-filter" placeholder="Filter by Ville..." value="${ordersFilter.city}" style="padding-left: 36px;">
-            </div>
         </div>
     `;
 
@@ -522,75 +612,77 @@ function renderOrders(container) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Client</th>
-                            <th>Article</th>
-                            <th>Colors/Qty</th>
-                            <th>Ville</th>
-                            <th style="text-align: center;">Phone</th>
-                            <th style="text-align: center;">Status</th>
-                            <th style="text-align: center;">Actions</th>
+                            <th style="padding: 14px 20px; width: 40px;">
+                                <input type="checkbox" id="select-all-orders" ${selectedOrderIds.length > 0 && selectedOrderIds.length === filtered.length ? 'checked' : ''} style="cursor: pointer; width: 16px; height: 16px;">
+                            </th>
+                            <th class="label-caps">Client</th>
+                            <th class="label-caps hide-mobile">Article</th>
+                            <th class="label-caps hide-mobile">Details</th>
+                            <th class="label-caps hide-mobile">Ville</th>
+                            <th class="label-caps" style="text-align: center;">Contact</th>
+                            <th class="label-caps" style="text-align: center;">Status</th>
+                            <th class="label-caps" style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${filtered.map(o => `
-                            <tr>
-                                <td>
-                                    <span class="font-bold">${o.client}</span>
+                            <tr style="background: ${selectedOrderIds.includes(o.id) ? 'var(--primary-tint)' : 'transparent'}">
+                                <td style="padding: 18px 20px; text-align: center;">
+                                    <input type="checkbox" class="order-checkbox" data-id="${o.id}" ${selectedOrderIds.includes(o.id) ? 'checked' : ''} style="cursor: pointer; width: 16px; height: 16px;">
                                 </td>
-                                <td>${o.article}</td>
-                                <td>
-                                    <div class="text-xs">${o.colors}</div>
-                                    <div class="text-xs" style="color: var(--text-light)">${o.quantities}</div>
+                                <td class="title">
+                                    ${o.client}
+                                    <div class="show-mobile label-caps" style="color: var(--text-light); margin-top: 4px; font-size: 10px;">${o.article} • ${o.ville}</div>
                                 </td>
-                                <td>${o.ville}</td>
-                                <td style="text-align: center;">
-                                    <div class="flex items-center gap-3 justify-center">
-                                        <a href="${getWhatsAppLink(o.phone)}" target="_blank" style="color: #10b981;" title="WhatsApp">${ICONS.whatsapp}</a>
-                                        <a href="tel:${formatPhone(o.phone)}" style="color: var(--text-muted);" title="Call">${ICONS.phone}</a>
+                                <td class="body hide-mobile">${o.article}</td>
+                                <td class="hide-mobile">
+                                    <div class="body" style="font-weight: 600;">${o.colors}</div>
+                                    <div class="label-caps" style="color: var(--text-light); font-size: 10px; margin-top: 2px;">${o.quantities}</div>
+                                </td>
+                                <td class="body hide-mobile" style="font-weight: 700; color: var(--text-muted);">${o.ville}</td>
+                                <td>
+                                    <div class="flex items-center justify-center gap-4">
+                                        <a href="${getWhatsAppLink(o.phone)}" target="_blank" style="color: #10b981; display: flex;">${ICONS.whatsapp}</a>
+                                        <a href="tel:${formatPhone(o.phone)}" class="hide-mobile" style="color: var(--text-muted); display: flex;">${ICONS.phone}</a>
                                     </div>
                                 </td>
                                 <td style="text-align: center;">${renderStatusDropdown(o)}</td>
-                                <td style="text-align: center;">
-                                    <div class="flex gap-2 justify-center">
+                                <td>
+                                    <div class="flex items-center justify-center gap-2">
                                         <button class="btn-icon view-order" data-id="${o.id}" title="View Details">${ICONS.eye}</button>
-                                        <button class="btn-icon edit-order" data-id="${o.id}" title="Edit">${ICONS.edit}</button>
-                                        <button class="btn-icon delete-order" data-id="${o.id}" title="Delete" style="color: var(--accent-rose);">${ICONS.trash}</button>
+                                        <button class="btn-icon edit-order hide-mobile" data-id="${o.id}" title="Edit Order">${ICONS.edit}</button>
+                                        <button class="btn-icon delete-order hide-mobile" data-id="${o.id}" title="Delete Order" style="color: var(--primary);">${ICONS.trash}</button>
                                     </div>
                                 </td>
                             </tr>
                         `).join('')}
-                        ${filtered.length === 0 ? '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-light)">No orders found</td></tr>' : ''}
+                        ${filtered.length === 0 ? '<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-light)">No orders found</td></tr>' : ''}
                     </tbody>
                 </table>
             </div>
         `;
     } else {
         html += `
-            <div class="kanban-board">
+            <div class="kanban-board" style="display: flex; gap: var(--space-md); overflow-x: auto; padding-bottom: var(--space-md);">
                 ${STATUSES.map(s => {
             const colOrders = filtered.filter(o => o.status === s);
-            const color = STATUS_COLORS[s];
             return `
-                        <div class="kanban-column" data-status="${s}">
-                            <div class="kanban-header">
+                        <div class="kanban-column" data-status="${s}" style="min-width: 300px; flex: 1; background: var(--surface-muted); border-radius: var(--radius-lg); padding: var(--space-sm);">
+                            <div class="flex justify-between items-center mb-4" style="padding: 0 var(--space-xs);">
                                 ${renderBadge(s)}
-                                <span class="text-xs font-bold" style="color: var(--text-light)">${colOrders.length}</span>
+                                <span class="label-caps" style="color: var(--text-muted)">${colOrders.length}</span>
                             </div>
-                            <div class="kanban-cards-area" style="min-height: 200px;">
+                            <div class="kanban-cards-area" style="min-height: 200px; display: flex; flex-direction: column; gap: var(--space-sm);">
                                 ${colOrders.map(o => `
-                                    <div class="kanban-card" draggable="true" data-id="${o.id}">
-                                        ${o.design ? `<img src="${o.design}">` : ''}
-                                        <h4>${o.client}</h4>
-                                        <p>${o.article} · ${o.colors}</p>
-                                        <p class="text-xs" style="color: var(--text-light); margin-top: -8px; margin-bottom: 8px;">${o.quantities}</p>
+                                    <div class="card kanban-card" draggable="true" data-id="${o.id}" style="padding: var(--space-md); margin-bottom: 0; cursor: grab; transition: var(--transition);">
+                                        ${o.design ? `<img src="${o.design}" style="width: 100%; height: 120px; object-fit: cover; border-radius: var(--radius-sm); margin-bottom: var(--space-sm); border: 1px solid var(--border);">` : ''}
+                                        <h4 class="title" style="margin-bottom: var(--space-xs);">${o.client}</h4>
+                                        <p class="body" style="color: var(--text-muted); font-size: 13px; margin-bottom: var(--space-sm);">${o.article}</p>
                                         <div class="flex justify-between items-center">
-                                            <span class="text-xs font-bold">${o.ville}</span>
+                                            <span class="label-caps" style="color: var(--text-main)">${o.ville}</span>
                                             <div class="flex gap-2">
-                                                <button class="btn-icon view-order" data-id="${o.id}" style="padding: 4px;" title="View Details">${ICONS.eye}</button>
-                                                <button class="btn-icon edit-order" data-id="${o.id}" style="padding: 4px;" title="Edit">${ICONS.edit}</button>
-                                                <button class="btn-icon delete-order" data-id="${o.id}" style="padding: 4px; color: var(--accent-rose);" title="Delete">${ICONS.trash}</button>
-                                                <a href="${getWhatsAppLink(o.phone)}" target="_blank" style="color: #10b981;" title="WhatsApp">${ICONS.whatsapp}</a>
-                                                <a href="tel:${formatPhone(o.phone)}" style="color: var(--text-muted);" title="Call">${ICONS.phone}</a>
+                                                <button class="btn-icon view-order" data-id="${o.id}" style="padding: 4px;">${ICONS.eye}</button>
+                                                <button class="btn-icon delete-order" data-id="${o.id}" style="padding: 4px; color: var(--primary);">${ICONS.trash}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -611,7 +703,78 @@ function renderOrders(container) {
     document.getElementById('add-order-btn').addEventListener('click', () => showOrderModal());
     document.getElementById('order-search').addEventListener('input', (e) => { ordersFilter.search = e.target.value; renderView(); });
     document.getElementById('order-status-filter').addEventListener('change', (e) => { ordersFilter.status = e.target.value; renderView(); });
-    document.getElementById('order-city-filter').addEventListener('input', (e) => { ordersFilter.city = e.target.value; renderView(); });
+
+    // Bulk Action Listeners
+    const selectAll = document.getElementById('select-all-orders');
+    if (selectAll) {
+        selectAll.addEventListener('change', (e) => {
+            if (e.target.checked) selectedOrderIds = filtered.map(o => o.id);
+            else selectedOrderIds = [];
+            renderView();
+        });
+    }
+
+    container.querySelectorAll('.order-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+            const id = cb.dataset.id;
+            if (e.target.checked) selectedOrderIds.push(id);
+            else selectedOrderIds = selectedOrderIds.filter(sid => sid !== id);
+            renderView();
+        });
+    });
+
+    document.getElementById('clear-selection')?.addEventListener('click', () => {
+        selectedOrderIds = [];
+        renderView();
+    });
+
+    document.querySelectorAll('.bulk-status-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const newStatus = btn.dataset.status;
+            showLoading(true);
+            try {
+                for (const id of selectedOrderIds) {
+                    const order = orders.find(o => o.id === id);
+                    if (order) {
+                        const updatedOrder = { ...order, status: newStatus };
+                        await callSheets({ action: 'updateOrder', order: updatedOrder });
+                        orders = orders.map(o => o.id === id ? updatedOrder : o);
+                    }
+                }
+                showToast(`Updated ${selectedOrderIds.length} orders to ${newStatus}`, 'success');
+                selectedOrderIds = [];
+                renderView();
+            } catch (e) {
+                showToast('Error updating multiple orders', 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+    });
+
+    document.getElementById('bulk-delete')?.addEventListener('click', () => {
+        showConfirm({
+            title: `Delete ${selectedOrderIds.length} Orders`,
+            text: `Are you sure you want to delete ${selectedOrderIds.length} selected orders? This action cannot be undone.`,
+            confirmText: 'Delete All Selected',
+            onConfirm: async () => {
+                showLoading(true);
+                try {
+                    for (const id of selectedOrderIds) {
+                        await callSheets({ action: 'deleteOrder', id: id });
+                        orders = orders.filter(o => o.id !== id);
+                    }
+                    showToast(`Deleted ${selectedOrderIds.length} orders`, 'success');
+                    selectedOrderIds = [];
+                    renderView();
+                } catch (e) {
+                    showToast('Error deleting multiple orders', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        });
+    });
 
     container.querySelectorAll('.edit-order').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -619,10 +782,6 @@ function renderOrders(container) {
             const order = orders.find(o => o.id === id);
             showOrderModal(order);
         });
-    });
-
-    container.querySelectorAll('.view-invoice').forEach(btn => {
-        btn.addEventListener('click', () => showInvoice(btn.dataset.id));
     });
 
     container.querySelectorAll('.view-order').forEach(btn => {
@@ -650,14 +809,12 @@ function renderOrders(container) {
                 const originalStatus = order.status;
                 const updatedOrder = { ...order, status: newStatus };
 
-                // Optimistic UI update
                 orders = orders.map(o => o.id === id ? updatedOrder : o);
                 renderView();
 
                 const result = await callSheets({ action: 'updateOrder', order: updatedOrder });
                 if (!result || !result.success) {
                     alert("Failed to update status in the database.");
-                    // Revert back on failure
                     orders = orders.map(o => o.id === id ? { ...order, status: originalStatus } : o);
                     renderView();
                 }
@@ -672,7 +829,7 @@ function renderTasks(container) {
     const activeOrders = orders.filter(o => ['To Do', 'Doing'].includes(o.status));
 
     // Aggregate inventory
-    const inventory = {}; // group by article, then by combination
+    const inventory = {}; 
 
     activeOrders.forEach(order => {
         const items = order.items && order.items.length > 0 ? order.items : [{
@@ -699,7 +856,7 @@ function renderTasks(container) {
                 colorsData.forEach(c => {
                     let qty = parseInt(c.qty, 10);
                     if (isNaN(qty)) {
-                        const match = String(c.qty).match(/\\d+/);
+                        const match = String(c.qty).match(/\d+/);
                         qty = match ? parseInt(match[0], 10) : 1;
                     }
                     const key = `${c.name}|||${c.hex || '#cccccc'}`;
@@ -712,7 +869,7 @@ function renderTasks(container) {
                 const sd = item.sachetData || {};
                 let qty = parseInt(sd.qty || order.quantities, 10);
                 if (isNaN(qty)) {
-                    const match = String(sd.qty || order.quantities).match(/\\d+/);
+                    const match = String(sd.qty || order.quantities).match(/\d+/);
                     qty = match ? parseInt(match[0], 10) : 1;
                 }
                 const color = sd.color || 'Unknown Color';
@@ -729,48 +886,46 @@ function renderTasks(container) {
     });
 
     let html = `
-        <div class="flex justify-between items-center fade-in" style="margin-bottom: 24px;">
+        <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
             <div>
-                <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">Inventory Overview</h2>
-                <p class="text-sm" style="color: var(--text-muted)">Total items needed for all active orders (To Do, Doing)</p>
+                <h2 class="display-stat" style="font-size: 24px; margin-bottom: var(--space-xs);">Inventory</h2>
+                <p class="body" style="color: var(--text-muted)">Material requirements for active orders</p>
             </div>
-            <div class="badge" style="background: #ffe5e5; color: var(--primary); font-size: 14px; padding: 8px 16px;">
-                <span class="badge-dot" style="background: var(--primary);"></span>
+            <div class="badge" style="background: var(--primary-soft); color: var(--primary); padding: 8px 16px;">
                 ${activeOrders.length} Active Orders
             </div>
         </div>
 
-        <div class="card mb-10 fade-in" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem;">
-            <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 700;">Stock Management</h3>
-            <div class="flex gap-3 fade-in" style="background: var(--surface-muted); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
-                <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 14px; font-weight: 600; color: var(--text-muted); white-space: nowrap;">I have</span>
-                    <input type="number" id="stock-qty-input" placeholder="0">
-                    <span style="font-size: 14px; font-weight: 600; color: var(--text-muted); white-space: nowrap;">of</span>
-                    <select id="stock-product-select" style="height: 40px; border-radius: 8px; flex: 1;">
+        <div class="card" style="margin-bottom: var(--space-xl);">
+            <h3 class="headline mb-4">Quick Stock Update</h3>
+            <div class="flex gap-3 items-center" style="background: var(--surface-muted); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <div style="flex: 1; display: flex; align-items: center; gap: var(--space-sm);">
+                    <span class="label-caps" style="color: var(--text-muted);">Stock:</span>
+                    <input type="number" id="stock-qty-input" placeholder="0" style="width: 80px; text-align: center; font-weight: 800;">
+                    <span class="label-caps" style="color: var(--text-muted);">of</span>
+                    <select id="stock-product-select" style="flex: 1; font-weight: 700;">
                         <option value="Ruban">Ruban</option>
                         <option value="Sachet sylable">Sachet sylable</option>
                         <option value="Sachet non tissé">Sachet non tissé</option>
                     </select>
-                    <button class="btn btn-primary" id="update-stock-btn" style="height: 40px; padding: 0 20px;">Update Stock</button>
+                    <button class="btn btn-primary" id="update-stock-btn">Update</button>
                 </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); margin-top: var(--space-lg);">
                 ${Object.entries(stocks).map(([prod, qty]) => `
-                    <div style="background: var(--bg-main); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-                        <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px;">${prod}</div>
-                        <div style="font-size: 24px; font-weight: 800; color: var(--text-main);">${qty.toLocaleString()}</div>
-                        <div style="font-size: 11px; color: var(--text-light); margin-top: 4px;">In Stock</div>
+                    <div style="background: var(--bg-main); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                        <div class="label-caps" style="color: var(--text-muted); margin-bottom: var(--space-xs);">${prod}</div>
+                        <div class="title" style="font-size: 24px; font-weight: 800;">${qty.toLocaleString()}</div>
                     </div>
                 `).join('')}
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;" class="fade-in">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-lg);">
     `;
 
     if (Object.keys(inventory).length === 0) {
-        html += `<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);">No items in active orders.</div>`;
+        html += `<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border);">No items in active orders.</div>`;
     } else {
         for (const [article, itemsObj] of Object.entries(inventory)) {
             const isRibbon = article === 'Ruban';
@@ -779,26 +934,24 @@ function renderTasks(container) {
             const listHtml = itemsList.map(it => {
                 if (isRibbon) {
                     return `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="width: 24px; height: 24px; border-radius: 50%; background: ${it.hex}; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
-                                <div>
-                                    <div style="font-weight: 700; color: var(--text-main);">${it.name}</div>
-                                </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border);">
+                            <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                                <div style="width: 24px; height: 24px; border-radius: 50%; background: ${it.hex}; border: 1px solid var(--border);"></div>
+                                <div class="body" style="font-weight: 700;">${it.name}</div>
                             </div>
-                            <div style="font-weight: 800; color: var(--chip-text); font-size: 0.95rem; background: var(--chip-bg); border: 1px solid var(--chip-border); padding: 4px 10px; border-radius: 8px; min-width: 48px; text-align: center;">
+                            <div class="title" style="background: var(--surface-muted); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);">
                                 ${it.qty}
                             </div>
                         </div>
                     `;
                 } else {
                     return `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border);">
                             <div>
-                                <div style="font-weight: 700; color: var(--text-main);">${it.color} <span style="color: var(--text-light); font-weight: 400; margin: 0 4px;">|</span> ${it.size}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">Print: <span style="color: var(--primary); font-weight: 600;">${it.print}</span></div>
+                                <div class="body" style="font-weight: 700;">${it.color} | ${it.size}</div>
+                                <div class="label-caps" style="color: var(--primary); margin-top: 2px;">Print: ${it.print}</div>
                             </div>
-                            <div style="font-weight: 800; color: var(--chip-text); font-size: 0.95rem; background: var(--chip-bg); border: 1px solid var(--chip-border); padding: 4px 10px; border-radius: 8px; min-width: 48px; text-align: center;">
+                            <div class="title" style="background: var(--surface-muted); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);">
                                 ${it.qty}
                             </div>
                         </div>
@@ -807,14 +960,12 @@ function renderTasks(container) {
             }).join('');
 
             html += `
-                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">${article}</h3>
-                        <div style="font-size: 0.8rem; background: var(--stat-indigo-bg); color: var(--primary); padding: 4px 10px; border-radius: 8px; font-weight: 700; border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);">
-                            ${itemsList.length} Variations
-                        </div>
+                <div class="card" style="margin-bottom: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+                        <h3 class="headline" style="color: var(--primary);">${article}</h3>
+                        <span class="label-caps" style="color: var(--text-muted);">${itemsList.length} Types</span>
                     </div>
-                    <div class="inventory-scroll" style="max-height: 400px; overflow-y: auto; padding-right: 8px;">
+                    <div class="inventory-scroll" style="max-height: 400px; overflow-y: auto;">
                         ${listHtml}
                     </div>
                 </div>
@@ -829,139 +980,170 @@ function renderTasks(container) {
     document.getElementById('update-stock-btn')?.addEventListener('click', () => {
         const qty = parseInt(document.getElementById('stock-qty-input').value, 10);
         const prod = document.getElementById('stock-product-select').value;
-
-        if (isNaN(qty)) {
-            alert('Please enter a valid quantity.');
-            return;
-        }
-
+        if (isNaN(qty)) return;
         stocks[prod] = qty;
         saveStocks();
-        renderView(); // Re-render to show updated stocks
+        renderView();
     });
 }
 
 function renderClients(container) {
-    let html = `
-        <div class="flex justify-between items-center mb-4">
-            <p class="text-sm" style="color: var(--text-muted)">${clients.length} listed clients</p>
-            <button class="btn btn-primary" id="add-client-btn">${ICONS.plus} New Client</button>
-        </div>
-        <div class="clients-grid">
-            ${clients.map(c => {
+    const getRowsHtml = (data) => data.map(c => {
         const oCount = orders.filter(o => o.client === c.name).length;
         const totalSpent = orders.filter(o => o.client === c.name).reduce((s, o) => s + o.price, 0);
+        const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
         return `
-                    <div class="client-card">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex gap-3">
-                                <div class="client-avatar">${c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</div>
-                                <div>
-                                    <h4 class="font-bold">${c.name}</h4>
-                                    <p class="text-xs" style="color: var(--text-light)">${c.city}</p>
-                                </div>
-                            </div>
-                            <a href="${getWhatsAppLink(c.phone)}" target="_blank" style="color: #10b981;">${ICONS.whatsapp}</a>
+            <tr>
+                <td>
+                    <div class="flex gap-3 items-center">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0;">
+                            ${initials}
                         </div>
-                        <div class="flex gap-2 mb-4">
-                            <div style="flex: 1; background: var(--surface-muted); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
-                                <div class="font-bold">${oCount}</div>
-                                <div class="text-xs" style="color: var(--text-light)">Orders</div>
-                            </div>
-                            <div style="flex: 1; background: var(--surface-muted); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
-                                <div class="font-bold">${totalSpent}</div>
-                                <div class="text-xs" style="color: var(--text-light)">Spent</div>
-                            </div>
-                        </div>
-                        <p class="text-sm mb-4" style="color: var(--text-muted); min-height: 40px;">${c.notes || 'No notes available.'}</p>
-                        <div class="flex gap-2" style="border-top: 1px solid var(--border-color); pt-4">
-                            <button class="btn btn-secondary edit-client" data-id="${c.id}" style="flex: 1; justify-content: center; font-size: 12px; margin-top: 12px;">${ICONS.edit} Edit</button>
-                            <button class="btn btn-danger delete-client" data-id="${c.id}" style="margin-top: 12px;">${ICONS.trash}</button>
+                        <div>
+                            <div class="title" style="font-size: 14px;">${c.name}</div>
+                            <div class="show-mobile label-caps" style="color: var(--text-light); margin-top: 4px; font-size: 10px;">${c.city}</div>
                         </div>
                     </div>
-                `;
-    }).join('')}
+                </td>
+                <td class="body hide-mobile" style="font-weight: 600; color: var(--text-muted);">${c.city}</td>
+                <td>
+                    <div class="flex items-center justify-center gap-4">
+                        <a href="${getWhatsAppLink(c.phone)}" target="_blank" style="color: #10b981; display: flex;">${ICONS.whatsapp}</a>
+                        <a href="tel:${formatPhone(c.phone)}" class="hide-mobile" style="color: var(--text-muted); display: flex;">${ICONS.phone}</a>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge" style="background: var(--bg-main); color: var(--text-main); font-weight: 800; padding: 4px 10px; border-radius: 8px;">${oCount}</span>
+                </td>
+                <td style="text-align: center;">
+                    <div class="title" style="font-size: 14px;">${totalSpent} MAD</div>
+                </td>
+                <td class="body hide-mobile" style="color: var(--text-muted); font-size: 12px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    ${c.notes || '-'}
+                </td>
+                <td>
+                    <div class="flex justify-center gap-2">
+                        <button class="btn btn-icon edit-client" data-id="${c.id}" title="Edit Client">${ICONS.edit}</button>
+                        <button class="btn btn-icon delete-client" data-id="${c.id}" style="color: var(--primary);" title="Delete Client">${ICONS.trash}</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('') || `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">${clientsFilter.search ? 'No clients match your search.' : 'No clients registered yet.'}</td></tr>`;
+
+    const filtered = clients.filter(c => {
+        const q = clientsFilter.search.toLowerCase();
+        return !q || c.name.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q) || c.city.toLowerCase().includes(q);
+    });
+
+    let html = `
+        <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+            <div>
+                <h2 class="display-stat" style="font-size: 24px; margin-bottom: var(--space-xs);">Clients</h2>
+                <p class="body" style="color: var(--text-muted)" id="client-count-label">${filtered.length} registered clients</p>
+            </div>
+            <button class="btn btn-primary" id="add-client-btn">${ICONS.plus} New Client</button>
+        </div>
+
+        <div class="flex gap-3" style="margin-bottom: var(--space-lg);">
+            <div style="position: relative; flex: 1;">
+                <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none;">${ICONS.search}</span>
+                <input type="text" id="client-search" placeholder="Search by name, phone or city..." value="${clientsFilter.search}" style="padding-left: 40px; height: 42px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="label-caps">Client</th>
+                        <th class="label-caps">City</th>
+                        <th class="label-caps" style="text-align: center;">Contact</th>
+                        <th class="label-caps" style="text-align: center;">Orders</th>
+                        <th class="label-caps" style="text-align: center;">Spent</th>
+                        <th class="label-caps hide-mobile">Notes</th>
+                        <th class="label-caps" style="text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table-body">
+                    ${getRowsHtml(filtered)}
+                </tbody>
+            </table>
         </div>
     `;
 
     container.innerHTML = html;
 
+    const attachActions = () => {
+        container.querySelectorAll('.edit-client').forEach(btn => {
+            btn.onclick = () => {
+                const client = clients.find(c => c.id === btn.dataset.id);
+                showClientModal(client);
+            };
+        });
+        container.querySelectorAll('.delete-client').forEach(btn => {
+            btn.onclick = () => {
+                showConfirm({
+                    title: 'Delete Client',
+                    text: 'Are you sure you want to remove this client? This will not delete their orders.',
+                    onConfirm: () => {
+                        clients = clients.filter(c => c.id !== btn.dataset.id);
+                        saveClients();
+                        renderView();
+                        closeModal();
+                    }
+                });
+            };
+        });
+    };
+
+    attachActions();
+
+    document.getElementById('client-search').addEventListener('input', (e) => {
+        clientsFilter.search = e.target.value;
+        const newFiltered = clients.filter(c => {
+            const q = clientsFilter.search.toLowerCase();
+            return !q || c.name.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q) || c.city.toLowerCase().includes(q);
+        });
+        
+        // Update only the body and count to preserve input focus
+        document.getElementById('clients-table-body').innerHTML = getRowsHtml(newFiltered);
+        document.getElementById('client-count-label').textContent = `${newFiltered.length} registered clients`;
+        attachActions();
+    });
+
     document.getElementById('add-client-btn').addEventListener('click', () => showClientModal());
-    container.querySelectorAll('.edit-client').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const client = clients.find(c => c.id === btn.dataset.id);
-            showClientModal(client);
-        });
-    });
-    container.querySelectorAll('.delete-client').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (confirm('Delete this client?')) {
-                clients = clients.filter(c => c.id !== btn.dataset.id);
-                renderView();
-            }
-        });
-    });
 }
 
 function renderBadge(status) {
-    const darkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-    const c = STATUS_COLORS[status] || { bg: "#F3F4F6", text: "#374151", dot: "#9CA3AF" };
-    const themed = darkMode
-        ? { bg: "rgba(217, 15, 15, 0.2)", text: "#ffdede", dot: "#f98080" }
-        : c;
-    return `
-        <span class="badge" style="background: ${themed.bg}; color: ${themed.text}">
-            <span class="badge-dot" style="background: ${themed.dot}"></span>
-            ${status}
-        </span>
-    `;
+    return getStatusBadgeHTML(status);
 }
 
 function renderStatusDropdown(order) {
-    const darkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-    const c = STATUS_COLORS[order.status] || { bg: "#F3F4F6", text: "#374151", dot: "#9CA3AF" };
-    const themed = darkMode
-        ? { bg: "rgba(217, 15, 15, 0.22)", text: "#ffdede", dot: "#f98080" }
-        : c;
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    const base = STATUS_COLORS[order.status] || { bg: "#F3F4F6", text: "#374151", dot: "#9CA3AF" };
+    const c = isDarkMode ? { bg: "rgba(217, 15, 15, 0.22)", text: "#ffdede", dot: "#f98080" } : base;
+
     return `
         <div style="position: relative; display: inline-block;">
             <select class="status-dropdown" data-id="${order.id}" style="
                 appearance: none;
-                background: ${themed.bg};
-                color: ${themed.text};
+                background: ${c.bg};
+                color: ${c.text};
                 border: 1px solid transparent;
-                padding: 4px 24px 4px 24px;
+                padding: 6px 28px 6px 24px;
                 border-radius: 99px;
                 font-size: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 outline: none;
                 font-family: inherit;
-                box-shadow: none;
-                transition: all 0.2s ease;
+                transition: var(--transition);
             ">
-                ${(STATUSES.includes(order.status) ? STATUSES : [order.status, ...STATUSES]).map(s => `<option value="${s}" ${s === order.status ? 'selected' : ''}>${s}</option>`).join('')}
+                ${STATUSES.map(s => `<option value="${s}" ${s === order.status ? 'selected' : ''}>${s}</option>`).join('')}
             </select>
-            <span style="
-                position: absolute;
-                left: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-                background: ${themed.dot};
-                pointer-events: none;
-            "></span>
-            <svg style="
-                position: absolute;
-                right: 8px;
-                top: 50%;
-                transform: translateY(-50%);
-                pointer-events: none;
-            " width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${themed.text}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: ${c.dot}; pointer-events: none;"></span>
+            <svg style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${c.text}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
     `;
 }
@@ -973,10 +1155,10 @@ function showOrderModal(order = null) {
     const headerActions = order ? `<button class="header-action-btn danger" onclick="deleteOrder('${order.id}')" title="Delete Order">${ICONS.trash}</button>` : '';
 
     const STEPS = [
-        { label: 'Client', icon: '👤' },
-        { label: 'Products', icon: '🗂️' },
-        { label: 'Design', icon: '🖼️' },
-        { label: 'Delivery', icon: '📦' },
+        { label: 'Client' },
+        { label: 'Products' },
+        { label: 'Design' },
+        { label: 'Delivery' },
     ];
     let currentStep = 0;
 
@@ -993,55 +1175,60 @@ function showOrderModal(order = null) {
             const isCollapsed = item.collapsed;
 
             return `
-                <div class="order-item-card ${isCollapsed ? 'collapsed' : ''}" id="item-card-${idx}">
-                    <div class="item-collapsed-summary" onclick="expandItem(${idx})">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="font-weight: 800; color: var(--primary); font-size: 14px;">${item.article}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">${isRibbon ? (item.colorsData?.length || 0) + ' colors' : (item.sachetData?.qty || 0) + ' pcs'}</div>
-                        </div>
-                        <div style="color: var(--text-light);">${ICONS.edit}</div>
-                    </div>
-                    
-                    <div class="item-expanded-content">
-                        <div class="order-item-number">
-                            <span>Product Selection — ${item.article}</span>
-                            <div style="display: flex; gap: 12px; align-items: center;">
-                                ${orderItems.length > 1 ? `<button type="button" onclick="removeItem(${idx})" style="color:var(--accent-rose); background:none; border:none; cursor:pointer; font-size: 12px; font-weight: 600;">Remove</button>` : ''}
-                                <button type="button" onclick="collapseItem(${idx})" style="color:var(--accent-emerald); background:none; border:none; cursor:pointer; font-size: 12px; font-weight: 600;">Done</button>
+                <div class="product-card-wizard ${isCollapsed ? '' : 'expanded'}" id="item-card-${idx}">
+                    <div class="product-card-header" onclick="expandItem(${idx})">
+                        <div class="flex items-center gap-4">
+                            <span class="product-idx-badge">#${idx+1}</span>
+                            <div>
+                                <div class="product-title">${item.article}</div>
+                                ${isCollapsed ? `<div class="body" style="color: var(--text-muted); font-size: 12px; margin-top: 2px;">${isRibbon ? (item.colorsData?.length || 0) + ' colors' : (item.sachetData?.qty || 0) + ' units'}</div>` : ''}
                             </div>
                         </div>
-                        <div class="form-group" style="margin-bottom:14px;">
-                            <label>Article / Product</label>
-                            <select onchange="updateItemArticle(${idx}, this.value)">
-                                <option value="Ruban" ${item.article === 'Ruban' ? 'selected' : ''}>Ruban</option>
+                        <div style="color: var(--text-light);">${isCollapsed ? ICONS.edit : ''}</div>
+                    </div>
+                    
+                    ${!isCollapsed ? `
+                    <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 24px;">
+                        <div class="wizard-field-group">
+                            <label class="wizard-label">Category</label>
+                            <select onchange="updateItemArticle(${idx}, this.value)" class="wizard-input wizard-select">
+                                <option value="Ruban" ${item.article === 'Ruban' ? 'selected' : ''}>Ruban (Premium Ribbon)</option>
                                 <option value="Sachet sylable" ${item.article === 'Sachet sylable' ? 'selected' : ''}>Sachet sylable</option>
                                 <option value="Sachet non tissé (avec poignet)" ${item.article === 'Sachet non tissé (avec poignet)' ? 'selected' : ''}>Sachet non tissé (avec poignet)</option>
                                 <option value="Sachet non tissé (sans poignet)" ${item.article === 'Sachet non tissé (sans poignet)' ? 'selected' : ''}>Sachet non tissé (sans poignet)</option>
                             </select>
                         </div>
+                        
                         <div id="item-fields-${idx}">
                         ${isRibbon ? `
-                            <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px;">Ribbon Colors &amp; Printing</p>
-                            <div id="ribbon-list-${idx}" class="mb-3"></div>
-                            <button type="button" class="btn btn-secondary btn-dashed w-full" style="justify-content:center; font-size:12px;" onclick="openRibbonPicker(${idx})">${ICONS.plus} Add Ribbon Color</button>
+                            <div class="flex justify-between items-center mb-4">
+                                <label class="wizard-label">Color Specifications</label>
+                                <button type="button" class="btn btn-secondary" style="padding: 6px 14px; font-size: 12px;" onclick="openRibbonPicker(${idx})">${ICONS.plus} Add Color</button>
+                            </div>
+                            <div id="ribbon-list-${idx}"></div>
                         ` : `
-                            <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px;">Sachet Specifications</p>
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                                <div class="form-group" style="margin-bottom:0;"><label>Color</label><input type="text" value="${item.sachetData?.color || ''}" placeholder="White" onchange="updateSachetData(${idx},'color',this.value)"></div>
-                                <div class="form-group" style="margin-bottom:0;"><label>Printing</label><input type="text" value="${item.sachetData?.print || ''}" placeholder="Gold" onchange="updateSachetData(${idx},'print',this.value)"></div>
-                                <div class="form-group" style="margin-bottom:0;"><label>Quantity</label><input type="number" value="${item.sachetData?.qty || ''}" placeholder="1000" onchange="updateSachetData(${idx},'qty',this.value)"></div>
-                                <div class="form-group" style="margin-bottom:0;"><label>Sizes (cm)</label><input type="text" value="${item.sachetData?.size || ''}" placeholder="30x40" onchange="updateSachetData(${idx},'size',this.value)"></div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div class="wizard-field-group"><label class="wizard-label">Material Color</label><input type="text" value="${item.sachetData?.color || ''}" placeholder="e.g. Matte White" onchange="updateSachetData(${idx},'color',this.value)" class="wizard-input"></div>
+                                <div class="wizard-field-group"><label class="wizard-label">Print Finish</label><input type="text" value="${item.sachetData?.print || ''}" placeholder="e.g. Glossy Gold" onchange="updateSachetData(${idx},'print',this.value)" class="wizard-input"></div>
+                                <div class="wizard-field-group"><label class="wizard-label">Total Qty</label><input type="number" value="${item.sachetData?.qty || ''}" placeholder="0" onchange="updateSachetData(${idx},'qty',this.value)" class="wizard-input" style="font-weight: 800;"></div>
+                                <div class="wizard-field-group"><label class="wizard-label">Dimensions</label><input type="text" value="${item.sachetData?.size || ''}" placeholder="e.g. 30x40 cm" onchange="updateSachetData(${idx},'size',this.value)" class="wizard-input"></div>
                             </div>
                         `}
                         </div>
+                        
+                        <div class="flex justify-between items-center mt-8 pt-4" style="border-top: 1px solid var(--border);">
+                            <button type="button" class="btn" style="color: var(--primary); background: none; padding: 0; font-size: 13px; font-weight: 700;" onclick="removeItem(${idx})">Delete Item</button>
+                            <button type="button" class="btn btn-primary" style="padding: 10px 28px;" onclick="collapseItem(${idx})">Confirm Selection</button>
+                        </div>
                     </div>
+                    ` : ''}
                 </div>
             `;
         }).join('');
 
         html += `
-            <button type="button" class="btn btn-secondary btn-dashed w-full" style="justify-content:center; margin-top:10px;" onclick="addItem()">
-                ${ICONS.plus} Add Another Product
+            <button type="button" class="btn btn-secondary w-full" style="justify-content: center; border: 2px dashed var(--border); background: var(--bg-main); padding: 18px; margin-top: 8px; color: var(--text-muted);" onclick="addItem()">
+                ${ICONS.plus} Add Another Product Configuration
             </button>
         `;
 
@@ -1052,275 +1239,269 @@ function showOrderModal(order = null) {
             const lc = document.getElementById(`ribbon-list-${idx}`);
             if (!lc) return;
             if (!item.colorsData?.length) {
-                lc.innerHTML = '<p style="color:var(--text-light);font-size:12px;padding:6px 0;">No ribbons added yet.</p>';
+                lc.innerHTML = '<div style="background: var(--bg-main); border-radius: 12px; border: 1px solid var(--border); padding: 30px; text-align: center; color: var(--text-light); font-style: italic; font-size: 14px;">No colors added yet. Click "Add Color" to start.</div>';
             } else {
-                lc.innerHTML = `<table style="width:100%;font-size:12px;border-collapse:collapse;">
-                    <thead><tr style="border-bottom:1px solid var(--border-color);">
-                        <th style="text-align:left;padding:4px;font-weight:700;background:none;color:var(--text-muted);">Color</th>
-                        <th style="width:56px;text-align:center;font-weight:700;background:none;color:var(--text-muted);">Qty</th>
-                        <th style="text-align:left;padding:4px;font-weight:700;background:none;color:var(--text-muted);">Print</th>
-                        <th style="width:28px;background:none;"></th>
-                    </tr></thead>
-                    <tbody>${item.colorsData.map((c, cIdx) => `
-                        <tr style="border-bottom:1px solid var(--surface-muted);">
-                            <td style="padding:6px 4px;">
-                                <div style="display:flex;align-items:center;gap:8px;">
-                                    <div style="width:14px;height:14px;border-radius:50%;background:${c.hex};border:1px solid var(--border-color);flex-shrink:0;"></div>
-                                    <span style="font-weight:600;color:var(--text-main);">${c.name}</span>
-                                </div>
-                            </td>
-                            <td style="padding:4px;text-align:center;">
-                                <input type="number" value="${c.qty}" style="padding:2px;width:44px;text-align:center;border-radius:4px;background:var(--bg-main);color:var(--text-main);border:1px solid var(--border-color);" onchange="updateRibbonProp(${idx},${cIdx},'qty',this.value)">
-                            </td>
-                            <td style="padding:4px;">
-                                <select style="padding:4px 6px;font-size:11px;background:var(--bg-main);color:var(--text-main);border:1px solid var(--border-color);" onchange="updateRibbonProp(${idx},${cIdx},'printColor',this.value)">
-                                    ${PRINT_COLORS.map(pc => `<option value="${pc}" ${c.printColor === pc ? 'selected' : ''}>${pc}</option>`).join('')}
-                                    <option value="custom" ${!PRINT_COLORS.includes(c.printColor) && c.printColor ? 'selected' : ''}>Other...</option>
-                                </select>
-                            </td>
-                            <td style="text-align:right;">
-                                <button type="button" onclick="removeRibbon(${idx},${cIdx})" style="color:var(--accent-rose);font-size:14px;background:none;border:none;cursor:pointer;">✕</button>
-                            </td>
-                        </tr>
-                    `).join('')}</tbody>
-                </table>`;
+                lc.innerHTML = `
+                <div class="ribbon-table">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th class="label-caps">Color</th>
+                                <th class="label-caps" style="text-align: center;">Qty</th>
+                                <th class="label-caps">Print</th>
+                                <th style="width: 50px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>${item.colorsData.map((c, cIdx) => `
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div style="width: 18px; height: 18px; border-radius: 50%; background: ${c.hex}; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.1);"></div>
+                                        <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">${c.name}</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" value="${c.qty}" class="wizard-input" style="width: 70px; height: 38px; text-align: center; font-weight: 800; padding: 0 8px;" onchange="updateRibbonProp(${idx},${cIdx},'qty',this.value)">
+                                </td>
+                                <td>
+                                    <select class="wizard-input wizard-select" style="height: 38px; font-size: 12px; font-weight: 700; padding: 0 12px; padding-right: 30px;" onchange="updateRibbonProp(${idx},${cIdx},'printColor',this.value)">
+                                        ${PRINT_COLORS.map(pc => `<option value="${pc}" ${c.printColor === pc ? 'selected' : ''}>${pc}</option>`).join('')}
+                                    </select>
+                                </td>
+                                <td style="text-align: right;">
+                                    <button type="button" onclick="removeRibbon(${idx},${cIdx})" style="color: var(--primary); background: none; border: none; cursor: pointer; padding: 8px;">${ICONS.trash}</button>
+                                </td>
+                            </tr>
+                        `).join('')}</tbody>
+                    </table>
+                </div>`;
             }
         });
     };
 
-    // ---- Global item handlers ----
     window.updateItemArticle = (idx, val) => { orderItems[idx].article = val; renderItemsList(); };
-    window.removeItem = (idx) => {
-        if (orderItems.length > 1) {
-            orderItems.splice(idx, 1);
-            renderItemsList();
-        }
-    };
-    window.addItem = () => {
-        orderItems.forEach(it => it.collapsed = true);
-        orderItems.push({ id: uid(), article: 'Ruban', colorsData: [], sachetData: {}, collapsed: false });
-        renderItemsList();
-    };
+    window.removeItem = (idx) => { if (orderItems.length > 1) { orderItems.splice(idx, 1); renderItemsList(); } };
+    window.addItem = () => { orderItems.forEach(it => it.collapsed = true); orderItems.push({ id: uid(), article: 'Ruban', colorsData: [], sachetData: {}, collapsed: false }); renderItemsList(); };
     window.collapseItem = (idx) => { orderItems[idx].collapsed = true; renderItemsList(); };
-    window.expandItem = (idx) => {
-        orderItems.forEach((it, i) => it.collapsed = (i !== idx));
-        renderItemsList();
-    };
+    window.expandItem = (idx) => { orderItems.forEach((it, i) => it.collapsed = (i !== idx)); renderItemsList(); };
     window.updateSachetData = (idx, field, val) => { orderItems[idx].sachetData = orderItems[idx].sachetData || {}; orderItems[idx].sachetData[field] = val; };
     window.openRibbonPicker = (idx) => {
         const currentNames = (orderItems[idx].colorsData || []).map(c => c.name);
         showColorPicker((color, isAdded) => {
             orderItems[idx].colorsData = orderItems[idx].colorsData || [];
-            if (isAdded) {
-                if (!orderItems[idx].colorsData.find(c => c.name === color.name)) {
-                    orderItems[idx].colorsData.push({ ...color, qty: 1, printColor: 'White' });
-                }
-            } else {
-                orderItems[idx].colorsData = orderItems[idx].colorsData.filter(c => c.name !== color.name);
-            }
+            if (isAdded) { if (!orderItems[idx].colorsData.find(c => c.name === color.name)) orderItems[idx].colorsData.push({ ...color, qty: 1, printColor: 'White' }); }
+            else { orderItems[idx].colorsData = orderItems[idx].colorsData.filter(c => c.name !== color.name); }
             renderItemsList();
         }, currentNames);
     };
-    window.updateRibbonProp = (iIdx, rIdx, prop, val) => {
-        orderItems[iIdx].colorsData[rIdx][prop] = val;
-        if (prop === 'printColor' && val === 'custom') {
-            const cv = prompt('Enter custom printing color:');
-            if (cv) orderItems[iIdx].colorsData[rIdx][prop] = cv;
-            renderItemsList();
-        }
-    };
+    window.updateRibbonProp = (iIdx, rIdx, prop, val) => { orderItems[iIdx].colorsData[rIdx][prop] = val; renderItemsList(); };
     window.removeRibbon = (iIdx, rIdx) => { orderItems[iIdx].colorsData.splice(rIdx, 1); renderItemsList(); };
 
-    // ---- Step content ----
     const stepPanels = [
-        // Step 0 – Client
-        `<div class="wizard-section-title">Client Info</div>
-         <div class="wizard-section-sub">Who placed this order?</div>
-         <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
-             <div class="form-group" style="margin-bottom:0;">
-                 <label>Client Name</label>
-                 <input type="text" id="form-client" value="${order?.client || ''}" placeholder="Full name" list="clients-datalist">
-                 <datalist id="clients-datalist">${clients.map(c => `<option value="${c.name}">`).join('')}</datalist>
-             </div>
-             <div class="form-group" style="margin-bottom:0;">
-                 <label>Phone Number</label>
-                 <input type="text" id="form-phone" value="${order?.phone || ''}" placeholder="06xxxxxxxx">
-             </div>
-             <div class="form-group" style="margin-bottom:0; margin-top: 10px;">
-                 <label>Total Price (DH)</label>
-                 <input type="number" id="form-price" value="${order?.price || ''}" placeholder="0.00">
-             </div>
-             <div class="form-group" style="margin-bottom:0; margin-top: 10px;">
-                 <label>Current Status</label>
-                 <select id="form-status">
-                    ${(STATUSES.includes(order?.status || 'To Do') ? STATUSES : [order?.status || 'To Do', ...STATUSES]).map(s => `<option value="${s}" ${(order?.status || 'To Do') === s ? 'selected' : ''}>${s}</option>`).join('')}
-                 </select>
-             </div>
-         </div>`,
-
-        // Step 1 – Products
-        `<div class="wizard-section-title">Order Product</div>
-         <div class="wizard-section-sub">Select the product for this order.</div>
-         <div id="items-container"></div>`,
-
-        // Step 2 – Design
-        `<div class="wizard-section-title">Design Image</div>
-         <div class="wizard-section-sub">Upload the reference or design file for this order.</div>
-         <div id="image-upload-zone" style="border:2px dashed var(--border-color);border-radius:14px;padding:40px 28px;text-align:center;cursor:pointer;background:var(--bg-card);transition:border-color .2s;">
-             ${order?.design
-            ? `<img src="${order.design}" style="max-height:140px;border-radius:10px;">`
-            : `<div style="color:var(--text-light);">${ICONS.upload}<p style="margin-top:12px;font-size:14px;font-weight:600;">Click to upload design image</p><p style="font-size:12px;margin-top:4px;">PNG, JPG, WEBP</p></div>`}
-             <input type="file" id="form-design" class="hidden" accept="image/*">
-         </div>`,
-
-        // Step 3 – Delivery
-        `<div class="wizard-section-title">Delivery Info</div>
-         <div class="wizard-section-sub">Where should we send it?</div>
-         <div class="form-group">
-             <label>Full Address</label>
-             <input type="text" id="form-address" value="${order?.address || ''}" placeholder="Street, building, floor...">
-         </div>
-         <div class="form-group" style="margin-bottom:0;">
-             <label>Ville (City)</label>
-             <input type="text" id="form-ville" value="${order?.ville || ''}" placeholder="e.g. Casablanca">
-         </div>`,
+        `<div class="wizard-container">
+            <h3 class="wizard-section-title">Client Details</h3>
+            <p class="wizard-section-desc">Who are we crafting this for? Select an existing client or enter new details.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="wizard-field-group" style="grid-column: span 2;">
+                    <label class="wizard-label">Customer Name</label>
+                    <input type="text" id="form-client" value="${order?.client || ''}" list="clients-datalist" placeholder="Full name" class="wizard-input" style="font-size: 17px; font-weight: 700; height: 56px;">
+                    <datalist id="clients-datalist">${clients.map(c => `<option value="${c.name}">`).join('')}</datalist>
+                </div>
+                <div class="wizard-field-group">
+                    <label class="wizard-label">Phone</label>
+                    <input type="text" id="form-phone" value="${order?.phone || ''}" placeholder="06XXXXXXXX" class="wizard-input">
+                </div>
+                <div class="wizard-field-group">
+                    <label class="wizard-label">Process Stage</label>
+                    <select id="form-status" class="wizard-input wizard-select" style="color: var(--primary); font-weight: 800;">
+                        ${STATUSES.map(s => `<option value="${s}" ${(order?.status || 'To Do') === s ? 'selected' : ''}>${s}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="wizard-field-group" style="grid-column: span 2;">
+                    <label class="wizard-label">Total Order Value</label>
+                    <div style="position: relative;">
+                        <input type="number" id="form-price" value="${order?.price || ''}" placeholder="0.00" class="wizard-input wizard-input-large" style="padding-left: 24px;">
+                        <span class="label-caps" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-weight: 800;">MAD</span>
+                    </div>
+                </div>
+            </div>
+        </div>`,
+        
+        `<div class="wizard-container" style="max-width: 750px;">
+            <h3 class="wizard-section-title">Product Stack</h3>
+            <p class="wizard-section-desc">Build the production requirement by adding items and specifying their finishes.</p>
+            <div id="items-container"></div>
+        </div>`,
+        
+        `<div class="wizard-container">
+            <h3 class="wizard-section-title">Design Artwork</h3>
+            <p class="wizard-section-desc">Upload the final design or a workshop reference image for this order.</p>
+            <div id="image-upload-zone" class="premium-upload-zone">
+                ${order?.design ? `<img src="${order.design}" style="max-height: 280px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">` : `
+                    <div>
+                        <div class="premium-upload-icon">${ICONS.upload}</div>
+                        <p class="headline" style="color: var(--text-main); margin-bottom: 6px;">Drop Design File Here</p>
+                        <p class="body" style="font-size: 13px; color: var(--text-muted);">or click to browse from your device</p>
+                    </div>
+                `}
+                <input type="file" id="form-design" class="hidden" accept="image/*">
+            </div>
+            ${order?.design ? `<div class="flex justify-center mt-6"><button type="button" class="btn btn-secondary" style="padding: 10px 24px;" onclick="document.getElementById('form-design').click()">Replace Image</button></div>` : ''}
+        </div>`,
+        
+        `<div class="wizard-container">
+            <h3 class="wizard-section-title">Logistics</h3>
+            <p class="wizard-section-desc">Confirm the final destination for shipping and delivery.</p>
+            <div class="wizard-field-group">
+                <label class="wizard-label">Delivery Address</label>
+                <textarea id="form-address" placeholder="Full street address, building info..." class="wizard-input wizard-textarea">${order?.address || ''}</textarea>
+            </div>
+            <div class="wizard-field-group">
+                <label class="wizard-label">Destination City</label>
+                <input type="text" id="form-ville" value="${order?.ville || ''}" placeholder="e.g. Casablanca" class="wizard-input" style="font-weight: 700;">
+            </div>
+        </div>`,
     ];
 
-    // ---- build modal body (progress UI + panels) ----
     const body = `
-        <div class="wizard-progress-wrap" id="wizard-progress" style="padding: 32px 32px 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; background: var(--bg-main);">
-            <div class="wizard-steps-header">
-                ${STEPS.map((s, i) => `
-                    <div class="wizard-step-dot" id="wdot-${i}" onclick="wizNav(${i - currentStep})" style="cursor:pointer;">
-                        <div class="wizard-step-circle">${s.icon}</div>
-                        <div class="wizard-step-label">${s.label}</div>
-                    </div>
-                `).join('')}
+        <div class="wizard-stepper-wrap" style="background: var(--bg-main); padding: 40px 40px 32px; border-bottom: 1px solid var(--border);">
+            <div class="premium-stepper">
+                <div id="wdot-0" class="step-item" onclick="wizNav(0 - currentStep)"><div class="step-circle">1</div><span class="step-label">Client</span></div>
+                <div id="wdot-1" class="step-item" onclick="wizNav(1 - currentStep)"><div class="step-circle">2</div><span class="step-label">Products</span></div>
+                <div id="wdot-2" class="step-item" onclick="wizNav(2 - currentStep)"><div class="step-circle">3</div><span class="step-label">Design</span></div>
+                <div id="wdot-3" class="step-item" onclick="wizNav(3 - currentStep)"><div class="step-circle">4</div><span class="step-label">Delivery</span></div>
             </div>
         </div>
-        <form id="order-form" style="padding: 0 28px 28px;">
-            ${stepPanels.map((html, i) => `<div class="wizard-panel${i === 0 ? ' active' : ''}" id="wstep-${i}">${html}</div>`).join('')}
-        </form>
+        <div id="order-form-container" style="padding: 40px 20px; min-height: 520px; background: var(--surface);">
+            <form id="order-form">
+                ${stepPanels.map((html, i) => `<div class="wizard-panel${i === 0 ? ' active' : ''}" id="wstep-${i}" style="display: ${i === 0 ? 'block' : 'none'}; opacity: ${i === 0 ? '1' : '0'}; transition: all 0.3s ease;">${html}</div>`).join('')}
+            </form>
+        </div>
     `;
 
     const footer = `
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px;">
-            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn btn-secondary" id="wiz-back" style="display:none; padding: 10px 14px;" onclick="wizNav(-1)">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <button class="btn btn-primary" id="wiz-next" style="padding: 10px 14px;" onclick="wizNav(1)">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
-                </button>
-                <button class="btn btn-primary" id="wiz-save" style="background:var(--accent-emerald); border-color:var(--accent-emerald); color: white; padding-left: 24px; padding-right: 24px;">✓ Save Changes</button>
+        <div class="flex justify-between w-full" style="padding: 0 10px;">
+            <button class="btn btn-secondary" style="padding: 12px 28px; background: transparent; border: none; font-weight: 600;" onclick="closeModal()">Dismiss</button>
+            <div class="flex gap-4">
+                <button class="btn btn-secondary" id="wiz-back" style="display: none; padding: 12px 28px; border-radius: 12px;" onclick="wizNav(-1)">Previous</button>
+                <button class="btn btn-primary" id="wiz-next" style="padding: 12px 40px; border-radius: 12px; min-width: 160px; box-shadow: 0 4px 12px rgba(217, 15, 15, 0.2);" onclick="wizNav(1)">Next Step</button>
+                <button class="btn btn-primary" id="wiz-save" style="display: none; background: #10b981; border-color: #10b981; padding: 12px 40px; border-radius: 12px; min-width: 180px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);">Complete Order</button>
             </div>
         </div>
     `;
 
     openModal(title, body, footer, '860px', headerActions);
 
-    // ---- Stepper engine ----
     const updateWizard = () => {
-        const total = STEPS.length;
-
+        const stepNumbers = ["1", "2", "3", "4"];
         STEPS.forEach((_, i) => {
             const dot = document.getElementById(`wdot-${i}`);
-            dot.className = 'wizard-step-dot' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+            const circle = dot.querySelector('.step-circle');
+            if (i < currentStep) { 
+                dot.className = 'step-item completed'; 
+                circle.textContent = '✓';
+            }
+            else if (i === currentStep) { 
+                dot.className = 'step-item active'; 
+                circle.textContent = stepNumbers[i];
+            }
+            else { 
+                dot.className = 'step-item'; 
+                circle.textContent = stepNumbers[i];
+            }
         });
-
+        
         document.querySelectorAll('.wizard-panel').forEach((p, i) => {
-            p.classList.toggle('active', i === currentStep);
+            if (i === currentStep) {
+                p.style.display = 'block';
+                setTimeout(() => p.style.opacity = '1', 50);
+            } else {
+                p.style.display = 'none';
+                p.style.opacity = '0';
+            }
         });
 
         document.getElementById('wiz-back').style.display = currentStep > 0 ? 'flex' : 'none';
-        document.getElementById('wiz-next').style.display = currentStep < total - 1 ? 'flex' : 'none';
-        document.getElementById('wiz-save').style.display = currentStep === total - 1 ? 'flex' : 'none';
-
+        document.getElementById('wiz-next').style.display = currentStep < STEPS.length - 1 ? 'flex' : 'none';
+        document.getElementById('wiz-save').style.display = currentStep === STEPS.length - 1 ? 'flex' : 'none';
+        
         if (currentStep === 1) renderItemsList();
         if (currentStep === 2) {
-            document.getElementById('image-upload-zone').addEventListener('click', () => document.getElementById('form-design').click());
-            document.getElementById('form-design').addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    document.getElementById('image-upload-zone').innerHTML = `<img src="${ev.target.result}" style="max-height:140px;border-radius:10px;">`;
+            const uploadZone = document.getElementById('image-upload-zone');
+            uploadZone.onclick = () => document.getElementById('form-design').click();
+            document.getElementById('form-design').onchange = (e) => {
+                const file = e.target.files[0]; if (!file) return;
+                const reader = new FileReader(); reader.onload = (ev) => {
+                    uploadZone.innerHTML = `<img src="${ev.target.result}" style="max-height: 280px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">`;
                     window.tempImage = ev.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
+                }; reader.readAsDataURL(file);
+            };
         }
     };
 
-    window.wizNav = (dir) => {
-        currentStep = Math.max(0, Math.min(STEPS.length - 1, currentStep + dir));
-        updateWizard();
-        document.querySelector('.modal')?.scrollTo({ top: 0, behavior: 'smooth' });
+    window.wizNav = (dir) => { 
+        currentStep = Math.max(0, Math.min(STEPS.length - 1, currentStep + dir)); 
+        updateWizard(); 
+        const modal = document.querySelector('.modal');
+        if (modal) modal.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Save
-    document.getElementById('wiz-save').addEventListener('click', async () => {
-        const colorsStr = orderItems.map(item => {
-            if (!['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(item.article))
-                return (item.colorsData || []).map(c => c.name).join(', ');
-            return item.sachetData?.color || '';
-        }).filter(s => s).join(' | ');
+    document.getElementById('wiz-save').onclick = async () => {
+        const clientName = document.getElementById('form-client').value.trim();
+        const clientPhone = document.getElementById('form-phone').value.trim();
+        const clientCity = capitalize(document.getElementById('form-ville').value.trim());
 
-        const quantitiesStr = orderItems.map(item => {
-            if (!['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(item.article))
-                return (item.colorsData || []).map(c => `${c.name}: ${c.qty}`).join(', ');
-            return `${item.article}: ${item.sachetData?.qty || 0} pcs`;
-        }).join(' | ');
-
-        const newOrder = {
-            id: order?.id || uid(),
-            client: document.getElementById('form-client').value,
-            phone: document.getElementById('form-phone').value,
-            price: parseFloat(document.getElementById('form-price').value) || 0,
-            address: document.getElementById('form-address').value,
-            ville: document.getElementById('form-ville').value,
-            items: orderItems,
-            article: orderItems.length > 1 ? `${orderItems.length} Products` : orderItems[0].article,
-            colors: colorsStr,
-            quantities: quantitiesStr,
-            design: window.tempImage || order?.design || null,
-            status: document.getElementById('form-status').value || 'To Do',
-            date: order?.date || new Date().toISOString().slice(0, 10)
+        const colorsStr = orderItems.map(it => (!['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(it.article)) ? (it.colorsData || []).map(c => c.name).join(', ') : (it.sachetData?.color || '')).filter(s => s).join(' | ');
+        const quantitiesStr = orderItems.map(it => (!['Sachet sylable', 'Sachet non tissé (avec poignet)', 'Sachet non tissé (sans poignet)'].includes(it.article)) ? (it.colorsData || []).map(c => `${c.name}: ${c.qty}`).join(', ') : `${it.article}: ${it.sachetData?.qty || 0} pcs`).join(' | ');
+        
+        const newOrder = { 
+            id: order?.id || uid(), 
+            client: clientName, 
+            phone: clientPhone, 
+            price: parseFloat(document.getElementById('form-price').value) || 0, 
+            address: document.getElementById('form-address').value, 
+            ville: clientCity, 
+            items: orderItems, 
+            article: orderItems.length > 1 ? `${orderItems.length} Products` : orderItems[0].article, 
+            colors: colorsStr, 
+            quantities: quantitiesStr, 
+            design: window.tempImage || order?.design || null, 
+            status: document.getElementById('form-status').value || 'To Do', 
+            date: order?.date || new Date().toISOString().slice(0, 10) 
         };
 
-        const action = order ? 'updateOrder' : 'addOrder';
-        const result = await callSheets({
-            action,
-            order: newOrder
-        });
-
+        const result = await callSheets({ action: order ? 'updateOrder' : 'addOrder', order: newOrder });
         if (result && result.success) {
-            if (order) {
-                orders = orders.map(o => o.id === order.id ? newOrder : o);
-                showToast('Order updated successfully', 'success');
-            } else {
-                orders.unshift(newOrder);
-                showToast('Order created successfully', 'success');
-                // Play notification sound for new order
-                const notification = document.getElementById('order-notification');
-                if (notification) {
-                    notification.volume = 1.0;
-                    notification.play().catch(e => console.error("Notification play failed:", e));
+            // Automatic Client Creation/Update
+            if (clientName) {
+                const existingClient = clients.find(c => c.name.toLowerCase() === clientName.toLowerCase() || (clientPhone && c.phone === clientPhone));
+                if (!existingClient) {
+                    clients.unshift({ id: uid(), name: clientName, phone: clientPhone, city: clientCity, notes: 'Added via Order' });
+                    saveClients();
+                } else {
+                    // Update city/phone if missing
+                    let updated = false;
+                    if (!existingClient.phone && clientPhone) { existingClient.phone = clientPhone; updated = true; }
+                    if (!existingClient.city && clientCity) { existingClient.city = clientCity; updated = true; }
+                    if (updated) saveClients();
                 }
+            }
 
-                // Automatic recap for new orders using EmailJS
+            if (order) orders = orders.map(o => o.id === order.id ? newOrder : o); 
+            else {
+                orders.unshift(newOrder);
                 window.sendEmailRecap(newOrder.id, true);
             }
-            renderView();
+            showToast('Order and client info saved', 'success'); 
+            renderView(); 
             closeModal();
-        } else {
-            showToast('Error saving to Google Sheets', 'error');
         }
-    });
-
+    };
+    
     updateWizard();
 }
+
+
 
 window.sendEmailRecap = async function (id, isAuto = false) {
     const order = orders.find(o => o.id === id);
@@ -1416,98 +1597,89 @@ function showTaskModal(task = null) {
 window.showInvoice = function (id) {
     const order = orders.find(o => o.id === id);
     if (!order) return;
-    const title = 'Order Details #' + order.id.toUpperCase();
+    
     const body = `
-        <div style="text-align: left; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
-            <img src="img/Wecraft Final Logos.png" alt="wecraft" style="margin: 0 0 12px; width: 160px; height: 70px; object-fit: contain; display: block;">
-            <p class="text-xs" style="color: var(--text-light)">Generated on ${new Date().toLocaleDateString()}</p>
-        </div>
-        <div class="mb-4">
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Client</span><span class="font-bold" style="color: var(--text-main);">${order.client}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Phone</span><span style="color: var(--text-main); direction: ltr; unicode-bidi: isolate;">${formatPhone(order.phone)}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Article</span><span style="color: var(--text-main);">${order.article}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Ville</span><span style="color: var(--text-main);">${order.ville}</span></div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Total Price</span><span style="color: var(--primary); font-weight: 800;">${formatCurrency(order.price || 0)}</span></div>
+        <div id="invoice-capture-area" style="padding: var(--space-lg); background: white; color: #111; border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; border-bottom: 3px solid #111; padding-bottom: 16px;">
+                <img src="img/Wecraft Final Logos.png" style="width: 140px;">
+                <div style="text-align: right;">
+                    <h2 class="display-stat" style="font-size: 22px; color: #111;">INVOICE</h2>
+                    <p class="label-caps" style="color: #777; margin-top: 4px;">#${order.id.toUpperCase()}</p>
+                </div>
+            </div>
             
-            <div style="margin-top: 16px; padding-top: 16px; border-top: 1.5px solid var(--text-main);">
-                <h4 style="font-size: 11px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.1em; color: var(--text-main); text-transform: uppercase;">Order Items</h4>
-                ${(order.items || [{ article: order.article, colorsData: order.colorsData, sachetData: order.sachetData }]).map((item, i) => {
-        const isRibbon = item.article === 'Ruban';
-        return `
-                        <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);">
-                            <div class="flex justify-between items-center mb-2">
-                                <span style="font-weight: 900; font-size: 14px; color: var(--primary);">${item.article}</span>
-                                <span style="font-size: 11px; padding: 2px 8px; background: var(--surface-muted); border: 1px solid var(--border-color); border-radius: 4px; font-weight: 600; color: var(--text-muted);">#${i + 1}</span>
-                            </div>
-                            ${isRibbon ?
-                (item.colorsData || []).map(c => `
-                                    <div class="flex items-center justify-between py-1">
-                                        <div class="flex items-center gap-2">
-                                            <div style="width: 10px; height: 10px; border-radius: 50%; background: ${c.hex}; border: 1px solid var(--border-color);"></div>
-                                            <span style="font-size: 12px; color: var(--text-main);">${c.name} x <strong>${c.qty}</strong></span>
-                                        </div>
-                                        <span style="font-size: 11px; color: var(--accent-blue);">Print: ${c.printColor || 'Std'}</span>
-                                    </div>
-                                `).join('') :
-                `<div style="font-size: 12px; line-height: 1.6; color: var(--text-main);">
-                                    <div class="flex justify-between"><span>Color:</span><strong>${item.sachetData?.color || '-'}</strong></div>
-                                    <div class="flex justify-between"><span>Size:</span><strong>${item.sachetData?.size || '-'}</strong></div>
-                                    <div class="flex justify-between"><span>Qty:</span><strong>${item.sachetData?.qty || '-'} pcs</strong></div>
-                                    <div class="flex justify-between"><span>Print:</span><strong style="color: var(--accent-blue)">${item.sachetData?.print || '-'}</strong></div>
-                                </div>`
-            }
-                        </div>
-                    `;
-    }).join('')}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;">
+                <div>
+                    <p class="label-caps" style="color: #777; margin-bottom: 8px; font-size: 10px; font-weight: 800;">BILL TO</p>
+                    <h4 class="headline" style="font-size: 20px; color: #111; margin-bottom: 6px;">${order.client}</h4>
+                    <div style="font-size: 14px; color: #444; line-height: 1.6;">
+                        <div style="font-weight: 700; color: #111;">${formatPhone(order.phone)}</div>
+                        <div>${order.address || ''}</div>
+                        <div style="text-transform: uppercase; font-size: 12px; font-weight: 700; color: #777; margin-top: 4px;">${order.ville}</div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <p class="label-caps" style="color: #777; margin-bottom: 8px; font-size: 10px; font-weight: 800;">ISSUE DATE</p>
+                    <div style="font-size: 16px; font-weight: 700; color: #111;">${formatDate(order.date)}</div>
+                </div>
             </div>
 
-            <div class="py-2" style="border-top: 1px solid var(--border-color); margin-top: 8px;">
-                <span style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 4px;">Address:</span>
-                <span style="font-size: 13px; color: var(--text-main);">${order.address}</span>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #111;">
+                        <th class="label-caps" style="padding: 12px 0; text-align: left; color: #777; font-size: 9px; background: none; border: none;">Description</th>
+                        <th class="label-caps" style="padding: 12px 0; text-align: right; color: #777; font-size: 9px; background: none; border: none;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 16px 0; border-bottom: 1px solid #eee;">
+                            <div class="title" style="font-size: 14px; color: #111; margin-bottom: 4px;">${order.article}</div>
+                            <div class="body" style="font-size: 12px; color: #666;">${order.colors || 'Standard Production'}</div>
+                        </td>
+                        <td class="title" style="padding: 16px 0; text-align: right; font-size: 15px; color: #111; border-bottom: 1px solid #eee;">
+                            ${formatCurrency(order.price)}
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="headline" style="padding: 20px 0; font-size: 16px; color: #111;">Total Amount</td>
+                        <td class="display-stat" style="text-align: right; font-size: 26px; color: #d90f0f; padding: 20px 0;">
+                            ${formatCurrency(order.price)}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="background: #fafafa; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #eee;">
+                <p class="label-caps" style="color: #999; font-size: 9px;">Thank you for your business with Wecraft Artisans</p>
             </div>
-            <div class="flex justify-between py-2"><span style="color: var(--text-muted)">Date</span><span style="color: var(--text-main);">${order.date}</span></div>
         </div>
     `;
-    const articlesMessage = (order.items || [{ article: order.article, colorsData: order.colorsData, sachetData: order.sachetData }]).map(item => {
-        if (item.article === 'Ruban') {
-            return (item.colorsData || []).map(c => {
-                const pColor = {
-                    'White': 'blanche', 'Black': 'noire', 'Gold': 'doré', 'Silver': 'argenté',
-                    'Bleu': 'bleue', 'Red': 'rouge', 'Pink': 'rose', 'Yellow': 'jaune'
-                }[c.printColor] || c.printColor;
-                return ` - ${c.qty} Rubans ${c.name} impression ${pColor}`;
-            }).join('\n');
-        } else {
-            const pColor = {
-                'White': 'blanche', 'Black': 'noire', 'Gold': 'doré', 'Silver': 'argenté',
-                'Bleu': 'bleue', 'Red': 'rouge', 'Pink': 'rose', 'Yellow': 'jaune'
-            }[item.sachetData?.print] || item.sachetData?.print;
-            return ` - ${item.sachetData?.qty || 0} Sachet ${item.sachetData?.color || ''} ${item.sachetData?.size || ''} Impression ${pColor}`;
-        }
-    }).join('\n');
-
-    const whatsappText = `Client : ${order.client}
-Téléphone : ${formatPhone(order.phone)}
-Adresse : ${order.address}
-Ville : ${order.ville}
-Articles : 
-${articlesMessage}
-Total : ${order.price || 0}dh`;
 
     const footer = `
-        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-        <a href="${getWhatsAppLink(order.phone)}?text=${encodeURIComponent(whatsappText)}" class="btn btn-success" target="_blank">${ICONS.whatsapp} Share Status</a>
+        <div style="display: flex; justify-content: flex-end; width: 100%; gap: 10px; padding: 0 10px;">
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            <button class="btn btn-primary" style="background: #25d366; color: white; border: none; font-weight: 700;" onclick="window.shareInvoiceAsImage('${order.id}')">
+                ${ICONS.whatsapp} Share as Image
+            </button>
+            <button class="btn btn-primary" style="background: var(--text-main); color: var(--bg-main); border: none;" onclick="window.print()">
+                Print PDF
+            </button>
+        </div>
     `;
-    openModal(title, body, footer);
-}
+
+    openModal('Invoice Preview', body, footer, '700px');
+};
 
 function showClientModal(client = null) {
     const title = client ? 'Edit Client' : 'New Client';
     const body = `
-        <div class="form-group"><label>Full Name</label><input type="text" id="client-name" value="${client?.name || ''}"></div>
-        <div class="form-group"><label>Phone</label><input type="text" id="client-phone" value="${client?.phone || ''}"></div>
-        <div class="form-group"><label>City</label><select id="client-city">${CITIES.map(c => `<option value="${c}" ${client?.city === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
-        <div class="form-group"><label>Notes</label><textarea id="client-notes">${client?.notes || ''}</textarea></div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="client-name" value="${client?.name || ''}" placeholder="e.g. Oussama Madrari"></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="client-phone" value="${client?.phone || ''}" placeholder="06XXXXXXXX"></div>
+        <div class="form-group"><label>City</label><input type="text" id="client-city" value="${client?.city || ''}" placeholder="e.g. Casablanca"></div>
+        <div class="form-group"><label>Notes</label><textarea id="client-notes" placeholder="Any specific details about this client...">${client?.notes || ''}</textarea></div>
     `;
     const footer = `<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="save-client-btn">Save Client</button>`;
 
@@ -1516,13 +1688,18 @@ function showClientModal(client = null) {
     document.getElementById('save-client-btn').addEventListener('click', () => {
         const nc = {
             id: client?.id || uid(),
-            name: document.getElementById('client-name').value,
-            phone: document.getElementById('client-phone').value,
-            city: document.getElementById('client-city').value,
-            notes: document.getElementById('client-notes').value
+            name: document.getElementById('client-name').value.trim(),
+            phone: document.getElementById('client-phone').value.trim(),
+            city: document.getElementById('client-city').value.trim(),
+            notes: document.getElementById('client-notes').value.trim()
         };
+        if (!nc.name) {
+            showToast('Client name is required', 'error');
+            return;
+        }
         if (client) clients = clients.map(c => c.id === client.id ? nc : c);
         else clients.unshift(nc);
+        saveClients();
         renderView();
         closeModal();
     });
@@ -1708,180 +1885,296 @@ window.downloadOrderImage = function (url, filename) {
     document.body.removeChild(a);
 };
 
-function showOrderDetailsModal(order) {
-    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-    const baseStatus = STATUS_COLORS[order.status] || { bg: "#F3F4F6", text: "#374151", dot: "#9CA3AF" };
-    const sc = isDarkMode
-        ? { bg: "rgba(217, 15, 15, 0.22)", text: "#ffdede", dot: "#f98080" }
-        : baseStatus;
+function openPremiumModal(content) {
+    const overlay = document.getElementById('e-modal-overlay');
+    const container = document.getElementById('e-modal-content');
+    container.innerHTML = content;
+    overlay.classList.add('active');
 
+    // Close logic
+    const closeBtn = container.querySelector('#e-close-modal');
+    if (closeBtn) closeBtn.onclick = () => overlay.classList.remove('active');
+    overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove('active'); };
+}
+
+function showOrderDetailsModal(order) {
     const items = order.items && order.items.length > 0 ? order.items : [{
         article: order.article,
         colorsData: order.colorsData || [],
         sachetData: order.sachetData || {}
     }];
 
-    let itemsHtml = items.map((item, idx) => {
+    const productCardsHtml = items.map((item, idx) => {
         const isRibbon = item.article === 'Ruban';
         let detailsHtml = '';
+        let totalQty = 0;
+
         if (isRibbon) {
-            if (item.colorsData && item.colorsData.length > 0) {
-                detailsHtml = item.colorsData.map(c => `
-                    <div class="so-detail-row">
-                        <div class="so-detail-label" style="display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 16px; height: 16px; border-radius: 50%; background: ${c.hex || '#ccc'}; border: 1px solid var(--border-color);"></div>
-                            ${c.name}
+            const colorsData = item.colorsData?.length ? item.colorsData : [{ name: order.colors || 'Unknown', qty: order.quantities || '-', printColor: 'Std', hex: '#ccc' }];
+            totalQty = colorsData.reduce((sum, c) => sum + (parseInt(c.qty) || 0), 0);
+            detailsHtml = `
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    ${colorsData.map(c => `
+                        <div class="flex items-center gap-3">
+                            <div style="width: 20px; height: 20px; border-radius: 50%; background: ${c.hex || '#ccc'}; border: 1px solid var(--border); flex-shrink: 0;"></div>
+                            <span style="font-size: 13px; font-weight: 600; flex: 1; color: var(--text-main);">${c.name}</span>
+                            <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">×${c.qty}</span>
                         </div>
-                        <div class="so-detail-value">
-                            Qty: ${c.qty} <span style="color: var(--text-light); margin: 0 6px; font-weight: 400;">|</span> <span style="font-weight: 500; color: var(--text-muted); font-size: 0.8rem;">PRINT:</span> <span style="color: var(--primary);">${c.printColor || 'Standard'}</span>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                detailsHtml = `<div class="so-detail-row"><span class="so-detail-label">Colors</span><span class="so-detail-value">${order.colors || '-'}</span></div>`;
-            }
+                    `).join('')}
+                </div>
+            `;
         } else {
             const sd = item.sachetData || {};
+            totalQty = parseInt(sd.qty) || 0;
+            const specs = [
+                { label: 'Color', value: sd.color || '-' },
+                { label: 'Size', value: sd.size || '-' },
+                { label: 'Quantity', value: sd.qty || order.quantities || '-' },
+                { label: 'Print', value: sd.print || '-' }
+            ];
             detailsHtml = `
-                <div class="so-detail-row"><span class="so-detail-label">Color</span><span class="so-detail-value">${sd.color || '-'}</span></div>
-                <div class="so-detail-row"><span class="so-detail-label">Size</span><span class="so-detail-value">${sd.size || '-'}</span></div>
-                <div class="so-detail-row"><span class="so-detail-label">Quantity</span><span class="so-detail-value">${sd.qty || order.quantities || '-'} pcs</span></div>
-                <div class="so-detail-row"><span class="so-detail-label">Print</span><span class="so-detail-value" style="color: var(--primary);">${sd.print || '-'}</span></div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    ${specs.map(s => `
+                        <div>
+                            <div style="font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">${s.label}</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-main);">${s.value}</div>
+                        </div>
+                    `).join('')}
+                </div>
             `;
         }
 
         return `
-            <div class="so-item-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="margin: 0; color: var(--text-main); font-size: 1.1rem;">${item.article || 'Unknown Article'}</h3>
-                    <span style="font-size: 11px; padding: 4px 8px; background: var(--surface-muted); border: 1px solid var(--border-color); border-radius: 6px; font-weight: 700; color: var(--text-muted);">ITEM #${idx + 1}</span>
+            <div class="dossier-product-card" data-card-index="${idx}">
+                <div class="dossier-product-header" onclick="toggleProductCard(${idx})">
+                    <div class="flex items-center gap-12" style="flex: 1; align-items: center;">
+                        <span class="dossier-idx-badge">#${String(idx + 1).padStart(2, '0')}</span>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0;">${item.article}</h4>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Qty: <strong>${totalQty}</strong></div>
+                        </div>
+                    </div>
+                    <div class="product-card-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
                 </div>
-                ${detailsHtml}
+                <div class="dossier-product-details" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+                    ${detailsHtml}
+                </div>
             </div>
         `;
     }).join('');
 
-    let designHtml = '';
-    if (order.design) {
-        const safeClientName = (order.client || 'Client').replace(/\s+/g, '_');
-        const safeOrderId = order.id || 'Order';
-        designHtml = `
-            <div class="so-design-img-container">
-                <img src="${order.design}" class="so-design-img" alt="Order Design">
-                <button class="so-btn-download" onclick="window.downloadOrderImage('${order.design}', 'Design_${safeClientName}_${safeOrderId}.png')">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Download Design
-                </button>
-            </div>
-        `;
-    } else {
-        designHtml = `
-            <div class="so-design-img-container" style="padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center;">
-                <div style="width: 64px; height: 64px; background: var(--surface-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="32" height="32" fill="none" stroke="var(--text-light)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </div>
-                <div style="color: var(--text-muted); font-weight: 600; font-size: 1.1rem;">No Design Attached</div>
-                <div style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.25rem;">This order doesn't have an image file.</div>
-            </div>
-        `;
-    }
-
-    const formattedPhone = formatPhone(order.phone);
-    const phoneHtml = order.phone ? `<a href="${getWhatsAppLink(order.phone)}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px; direction: ltr; unicode-bidi: isolate;">${formattedPhone} <svg width="14" height="14" viewBox="0 0 24 24" fill="#10b981"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>` : '-';
-
-    const body = `
-        <style>
-            .so-order-header { padding: 1.5rem; background: color-mix(in srgb, var(--primary) 12%, var(--bg-card)); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 1.25rem; text-align: left; }
-            .so-order-header h1 { margin: 0 0 0.5rem 0; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
-            .so-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; gap: 6px; }
-            .so-order-content { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; text-align: left; }
-            .so-section-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 800; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
-            .so-item-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-            .so-detail-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed var(--border-color); }
-            .so-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
-            .so-detail-label { color: var(--text-muted); font-weight: 500; font-size: 0.9rem; }
-            .so-detail-value { color: var(--text-main); font-weight: 700; font-size: 0.9rem; }
-            .so-design-img-container { background: var(--bg-card); border-radius: 12px; padding: 1rem; text-align: center; border: 1px solid var(--border-color); }
-            .so-design-img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 1rem; display: block; }
-            .so-btn-download { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; width: 100%; border: none; cursor: pointer; font-family: inherit; font-size: 0.95rem; }
-            .so-btn-download:hover { background: var(--primary-hover); transform: translateY(-1px); }
-            .so-client-info { display: flex; flex-direction: column; gap: 1rem; }
-            .so-client-info-item { display: flex; align-items: flex-start; gap: 1rem; }
-            .so-icon-box { width: 36px; height: 36px; border-radius: 10px; background: color-mix(in srgb, var(--primary) 12%, var(--bg-card)); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border-color); }
-            @media (max-width: 768px) { .so-order-content { grid-template-columns: 1fr; } }
-        </style>
-        
-        <div class="so-order-header">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    const content = `
+        <div class="dossier-modal">
+            <!-- Header -->
+            <div class="dossier-header">
                 <div>
-                    <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 700;">Order ID: ${order.id || 'N/A'}</div>
-                    <h1>${order.client || 'Unknown Client'}</h1>
-                    <div style="color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        Created on ${order.date ? new Date(order.date).toLocaleDateString() : new Date().toLocaleDateString()}
+                    <h2 style="font-size: 28px; font-weight: 800; color: var(--text-main); margin: 0;">${order.client}</h2>
+                    <div class="flex items-center gap-3 mt-3" style="align-items: center;">
+                        ${getStatusBadgeHTML(order.status)}
+                        <span style="font-size: 11px; color: var(--text-light); font-family: monospace;">REF: ${order.id.toUpperCase()}</span>
                     </div>
                 </div>
-                <div class="so-badge" style="background: ${sc.bg}; color: ${sc.text}; border: 1px solid var(--border-color);">
-                    <span style="width: 8px; height: 8px; border-radius: 50%; background: ${sc.dot};"></span>
-                    ${order.status || 'To Do'}
-                </div>
+                <button id="e-close-modal" class="dossier-close-btn">×</button>
             </div>
-        </div>
-        
-        <div class="so-order-content">
-            <div>
-                <div class="so-section-title">Order Items</div>
-                ${itemsHtml}
-                
-                <div class="so-section-title" style="margin-top: 2rem;">Client Details</div>
-                <div class="so-client-info">
-                    <div class="so-client-info-item">
-                        <div class="so-icon-box">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+
+            <!-- Body: Two Columns -->
+            <div class="dossier-body">
+                <!-- Left Column: Production Requirements -->
+                <div class="dossier-left">
+                    <div class="dossier-section-label">Production Requirements</div>
+                    <div class="dossier-products">
+                        ${productCardsHtml}
+                    </div>
+                </div>
+
+                <!-- Right Column: Totals & Shipment -->
+                <div class="dossier-right">
+                    <!-- Total Value Block -->
+                    <div class="dossier-value-block">
+                        <div style="font-size: 9px; color: var(--primary); text-transform: uppercase; font-weight: 800; margin-bottom: 8px;">Total Value</div>
+                        <div style="font-size: 32px; font-weight: 800; color: var(--primary); letter-spacing: -1px;">${formatCurrency(order.price)}</div>
+                    </div>
+
+                    <!-- Reference Image (Fixed Height) -->
+                    <div class="dossier-image-block">
+                        ${order.design ? `
+                            <img src="${order.design}" style="width: 100%; height: 130px; object-fit: contain; object-position: center; display: block;">
+                        ` : `
+                            <div style="height: 130px; display: flex; align-items: center; justify-content: center; color: var(--text-light);">
+                                ${ICONS.upload}
+                            </div>
+                        `}
+                    </div>
+
+                    <!-- Shipment Block -->
+                    <div class="dossier-shipment-block">
+                        <div class="dossier-shipment-row">
+                            <div style="flex-shrink: 0;">${ICONS.phone}</div>
+                            <div>
+                                <div style="font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Direct Line</div>
+                                <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 2px;">${formatPhone(order.phone)}</div>
+                            </div>
                         </div>
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Phone Number</div>
-                            <div style="font-weight: 700; color: var(--text-main); margin-top: 2px;">
-                                ${phoneHtml}
+                        <div style="height: 1px; background: var(--border); margin: 12px 0;"></div>
+                        <div class="dossier-shipment-row">
+                            <div style="flex-shrink: 0;">${ICONS.bag}</div>
+                            <div>
+                                <div style="font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Address</div>
+                                <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 2px;">${order.ville}${order.address ? ', ' + order.address : ''}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="so-client-info-item">
-                        <div class="so-icon-box">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Delivery Address</div>
-                            <div style="font-weight: 700; color: var(--text-main); margin-top: 2px;">
-                                ${order.address || 'No address provided'}
-                                ${order.ville ? `<div style="color: var(--text-muted); font-weight: 500; font-size: 0.85rem; margin-top: 2px;">${order.ville}</div>` : ''}
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-            
-            <div>
-                <div class="so-section-title">Design Preview</div>
-                ${designHtml}
+
+            <!-- Footer -->
+            <div class="dossier-footer">
+                <button class="dossier-btn dossier-btn-invoice" onclick="window.showInvoice('${order.id}')">${ICONS.invoice} Invoice</button>
+                <button class="dossier-btn dossier-btn-whatsapp" onclick="window.shareInvoiceAsImage('${order.id}')">${ICONS.whatsapp} WhatsApp</button>
+                <button class="dossier-btn dossier-btn-email" onclick="window.sendEmailRecap('${order.id}')">${ICONS.mail} Email</button>
             </div>
         </div>
     `;
-
-    const footer = `
-        <div style="display: flex; justify-content: flex-end; width: 100%; gap: 10px;">
-            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-            <button class="btn btn-primary" onclick="window.sendEmailRecap('${order.id}')" style="background: var(--primary); color: white; display: flex; align-items: center; gap: 8px;">
-                ${ICONS.mail} Send Recap
-            </button>
-            <button class="btn btn-primary" onclick="showInvoice('${order.id}')" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;">
-                ${ICONS.invoice} View Invoice
-            </button>
-        </div>
-    `;
-
-    openModal('Order Details', body, footer, '900px');
+    openPremiumModal(content);
 }
+
+window.shareInvoiceAsImage = async function(id) {
+    const order = orders.find(o => o.id === id);
+    if (!order) return;
+    
+    showLoading(true);
+    
+    // Create a hidden container for the invoice to capture
+    const captureContainer = document.createElement('div');
+    captureContainer.style.position = 'fixed';
+    captureContainer.style.left = '-9999px';
+    captureContainer.style.top = '0';
+    captureContainer.style.width = '600px';
+    captureContainer.style.background = 'white';
+    captureContainer.style.color = '#111';
+    captureContainer.style.padding = '40px';
+    captureContainer.style.fontFamily = "'DM Sans', sans-serif";
+    
+    const itemsMessage = (order.items || [{ article: order.article, colors: order.colors, quantities: order.quantities, colorsData: order.colorsData, sachetData: order.sachetData }]).map(item => {
+        const isRibbon = item.article === 'Ruban';
+        let detailHtml = '';
+        
+        if (isRibbon) {
+            const colors = item.colorsData?.length ? item.colorsData : [];
+            detailHtml = colors.map(c => `
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                    <div style="width: 14px; height: 14px; border-radius: 50%; background: ${c.hex || '#ccc'}; border: 1px solid #eee;"></div>
+                    <span style="font-size: 14px; font-weight: 700; color: #111;">${c.name}</span>
+                    <span style="font-size: 13px; color: #777;">× ${c.qty}</span>
+                </div>
+            `).join('') || `<div style="font-size: 13px; color: #444;">${item.colors || ''}</div><div style="font-weight: 700; font-size: 14px; margin-top: 4px;">${item.quantities || ''}</div>`;
+        } else {
+            const qty = item.sachetData?.qty || item.quantities || '0';
+            const color = item.sachetData?.color || item.colors || '';
+            detailHtml = `
+                <div style="font-size: 14px; color: #444; margin-top: 4px;">
+                    <span style="font-weight: 700; color: #111;">${color}</span>
+                    ${item.sachetData?.size ? ` | <span style="color: #777;">${item.sachetData.size}</span>` : ''}
+                </div>
+                <div style="font-size: 16px; font-weight: 800; color: #111; margin-top: 4px;">Qty: ${qty} pcs</div>
+            `;
+        }
+
+        return `<div style="padding: 16px 0; border-bottom: 1px solid #eee;">
+            <div style="font-weight: 800; font-size: 14px; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">${item.article}</div>
+            ${detailHtml}
+        </div>`;
+    }).join('');
+
+    captureContainer.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 3px solid #111; padding-bottom: 20px;">
+            <img src="img/Wecraft Final Logos.png" style="width: 160px;">
+            <div style="text-align: right;">
+                <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #777;">Order Confirmation</div>
+                <div style="font-size: 24px; font-weight: 800; margin-top: 4px;">#${order.id.toUpperCase()}</div>
+            </div>
+        </div>
+        <div style="margin-bottom: 30px;">
+            <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #777; margin-bottom: 12px; letter-spacing: 0.05em;">BILL TO</div>
+            <div style="font-size: 28px; font-weight: 800; margin-bottom: 6px; color: #111;">${order.client}</div>
+            <div style="font-size: 16px; color: #444; font-weight: 500;">
+                <span style="font-weight: 700;">${formatPhone(order.phone)}</span> | ${order.ville}
+            </div>
+        </div>
+        <div style="margin-bottom: 40px;">
+            ${itemsMessage}
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 24px; border-radius: 16px; border: 1px solid #eee;">
+            <div>
+                <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #777; letter-spacing: 0.05em;">Total Production Value</div>
+                <div style="font-size: 15px; color: #555; margin-top: 4px; font-weight: 600;">${formatDate(order.date)}</div>
+            </div>
+            <div style="font-size: 36px; font-weight: 800; color: #d90f0f;">${formatCurrency(order.price)}</div>
+        </div>
+        <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">
+            Thank you for choosing Wecraft Artisans
+        </div>
+    `;
+    
+    document.body.appendChild(captureContainer);
+    
+    try {
+        const canvas = await html2canvas(captureContainer, {
+            scale: 2, // High res
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+        
+        document.body.removeChild(captureContainer);
+        
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const file = new File([blob], `Wecraft_Invoice_${order.id}.png`, { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: 'Wecraft Order Invoice',
+                text: `Invoice for order #${order.id.toUpperCase()}`
+            });
+        } else {
+            // Fallback: Download the image
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Wecraft_Invoice_${order.id}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('Invoice image downloaded. You can now share it manually.', 'info');
+        }
+    } catch (e) {
+        console.error("Capture Error:", e);
+        showToast('Failed to generate invoice image', 'error');
+    } finally {
+        showLoading(false);
+    }
+};
+
+// Toggle Product Card Expand/Collapse
+window.toggleProductCard = function(index) {
+    const card = document.querySelector(`[data-card-index="${index}"]`);
+    if (!card) return;
+    
+    const details = card.querySelector('.dossier-product-details');
+    const toggle = card.querySelector('.product-card-toggle');
+    
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+        toggle.style.transform = 'rotate(180deg)';
+    } else {
+        details.style.display = 'none';
+        toggle.style.transform = 'rotate(0deg)';
+    }
+};
 
 // Initialize App
 init();

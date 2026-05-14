@@ -6,7 +6,7 @@
     <title>wecraft | Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -18,6 +18,9 @@
         <aside id="sidebar">
             <div class="sidebar-header">
                 <img src="img/Wecraft Final Logos.png" alt="wecraft" class="brand-logo">
+                <button id="close-sidebar-mobile" class="btn-icon" aria-label="Close sidebar" style="display: none; margin-left: auto;">
+                    <span id="icon-close"></span>
+                </button>
             </div>
             <ul class="nav-links">
                 <li class="nav-item">
@@ -53,26 +56,17 @@
         <main>
             <header>
                 <div class="top-left">
-                    <button id="toggle-sidebar" class="btn-icon">
+                    <button id="toggle-sidebar" class="btn-icon" aria-label="Toggle sidebar navigation">
                         <span id="icon-menu"></span>
                     </button>
-                    <h2 id="view-title" style="font-size: 18px; font-weight: 700;">Dashboard</h2>
-                </div>
-                <div class="top-center">
-                    <div class="header-search">
-                        <input type="text" placeholder="Search anything">
-                        <span id="icon-search"></span>
-                    </div>
+                    <h2 id="view-title">Dashboard</h2>
                 </div>
                 <div class="top-right">
-                    <button class="btn-icon header-alert" aria-label="Notifications">
-                        <span class="alert-dot"></span>
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 01-3.46 0"></path>
-                        </svg>
-                    </button>
-                    <button id="theme-toggle" class="btn-icon" aria-label="Toggle theme">
+                    <div class="header-search">
+                        <input type="text" placeholder="Search anything" aria-label="Search orders, clients, and inventory">
+                        <span id="icon-search"></span>
+                    </div>
+                    <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode">
                         <span id="icon-theme"></span>
                     </button>
                 </div>
@@ -84,7 +78,35 @@
         </main>
     </div>
 
+    <!-- Mobile Tab Bar -->
+    <nav class="tab-bar">
+        <a class="tab-item active" data-view="dashboard">
+            <span class="icon" id="tab-icon-dashboard"></span>
+            <span>Home</span>
+        </a>
+        <a class="tab-item" data-view="orders">
+            <span class="icon" id="tab-icon-orders"></span>
+            <span>Orders</span>
+        </a>
+        <a class="tab-item" data-view="tasks">
+            <span class="icon" id="tab-icon-tasks"></span>
+            <span>Stock</span>
+        </a>
+        <a class="tab-item" data-view="clients">
+            <span class="icon" id="tab-icon-clients"></span>
+            <span>Clients</span>
+        </a>
+    </nav>
+
     <!-- Modals -->
+    <div id="e-modal-overlay" class="e-modal-overlay">
+        <div class="e-shell">
+            <div class="e-core" id="e-modal-content">
+                <!-- Premium content injected here -->
+            </div>
+        </div>
+    </div>
+
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal">
             <div class="modal-header">
@@ -94,7 +116,7 @@
                 <div class="modal-header-actions" id="modal-header-actions">
                     <!-- Action buttons injected here -->
                 </div>
-                <button class="btn-icon" id="close-modal">
+                <button class="btn-icon" id="close-modal" aria-label="Close dialog">
                     <span id="icon-close"></span>
                 </button>
             </div>
@@ -113,8 +135,9 @@
 
 
     <audio id="welcome-audio" src="assets/%D8%A7%D9%84%D8%A7%20%D9%8A%D8%A8%D8%A7%D8%B1%D9%83%20%D9%81%D8%B9%D9%85%D8%B1%20%D8%B3%D9%8A%D8%AF%D9%8A.mp3" preload="auto"></audio>
-    <audio id="order-notification" src="assets/WhatsApp%20Audio%202026-05-08%20at%2019.00.08.mp3" preload="auto"></audio>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
     <script>
         // Audio logic could go here if needed later

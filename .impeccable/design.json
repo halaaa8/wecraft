@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-10T14:30:00Z",
+  "title": "Design System: Wecraft",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Wecraft Red", "canonical": "#d90f0f", "tonalRamp": ["#4d0505", "#8c0909", "#b30c0c", "#d90f0f", "#e03f3f", "#e97272", "#f2a6a6", "#fad9d9"] },
+      "neutral-bg": { "role": "neutral", "displayName": "Paper White", "canonical": "#fafafa", "tonalRamp": ["#1a1a1a", "#404040", "#737373", "#a6a6a6", "#cccccc", "#e5e5e5", "#f2f2f2", "#fafafa"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Stat", "purpose": "High-level metrics." },
+      "body": { "displayName": "UI Body", "purpose": "Standard text and data." }
+    },
+    "shadows": [
+      { "name": "ambient-low", "value": "0 2px 10px rgb(17 17 17 / 0.04)", "purpose": "Subtle depth for cards." }
+    ],
+    "motion": [
+      { "name": "standard", "value": "all 150ms ease", "purpose": "Quick response for hover and state changes." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Bold red action button.",
+      "html": "<button class=\"ds-btn-primary\">GET STARTED</button>",
+      "css": ".ds-btn-primary { background: #d90f0f; color: #fff; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: all 150ms ease; } .ds-btn-primary:hover { background: #b30c0c; }"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Informational card with ambient shadow.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-stat-label\">Active Orders</div><div class=\"ds-stat-value\">24</div></div>",
+      "css": ".ds-card { background: #fff; border-radius: 14px; border: 1px solid #eaeaea; padding: 24px; box-shadow: 0 2px 10px rgb(17 17 17 / 0.04); font-family: 'DM Sans', sans-serif; } .ds-stat-label { font-size: 14px; color: #777777; font-weight: 600; margin-bottom: 4px; } .ds-stat-value { font-size: 42px; font-weight: 800; letter-spacing: -1.5px; color: #111111; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "description": "Sidebar navigation item.",
+      "html": "<a class=\"ds-nav-link active\"><span>Dashboard</span></a>",
+      "css": ".ds-nav-link { display: flex; align-items: center; padding: 10px 12px; border-radius: 8px; color: #777777; text-decoration: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; transition: all 150ms ease; cursor: pointer; } .ds-nav-link.active { background: #ffe5e5; color: #d90f0f; font-weight: 600; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Artisan's Material Ledger",
+    "overview": "The Wecraft design system is built for the high-intensity environment of a physical workshop. It prioritizes data density without sacrificing readability, providing a 'material compass' for artisans to navigate their inventory and orders.",
+    "keyCharacteristics": [
+      "Utility-Led Hierarchy: Critical stats and material totals are oversized and bold.",
+      "Breathable Density: Generous whitespace surrounds dense tables to maintain clarity.",
+      "Brand Authority: Strategic use of Wecraft Red (#d90f0f) to anchor the user's attention.",
+      "Workshop-Ready: High-contrast typography and large touch targets for mobile use."
+    ],
+    "rules": [
+      { "name": "The Red Rarity Rule", "body": "Wecraft Red should be used for ≤10% of any given screen.", "section": "colors" },
+      { "name": "The Flat-Surface Rule", "body": "Most UI elements remain flat. Depth is primarily conveyed through borders and tonal shifts.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use DM Sans for all UI elements.",
+      "Do ensure every table row has a hover state.",
+      "Do use the large 14px radius for all main content containers."
+    ],
+    "donts": [
+      "Don't use information-dense 'crowded' layouts.",
+      "Don't use Wecraft Red for non-interactive elements.",
+      "Don't fail the mobile test. Every table must be responsive.",
+      "Don't use over-complicated color schemes."
+    ]
+  }
+}

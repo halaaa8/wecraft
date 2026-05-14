@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "devDependencies": {
     "firebase-tools": "^15.17.0"
+  },
+  "dependencies": {
+    "framer-motion": "^12.38.0"
   }
 }

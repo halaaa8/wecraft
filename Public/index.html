@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
@@ -36,8 +37,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-view="tasks">
-                        <span class="icon" id="icon-tasks"></span>
+                    <a class="nav-link" data-view="inventory">
+                        <span class="icon" id="icon-inventory"></span>
                         <span>Inventory</span>
                     </a>
                 </li>
@@ -80,22 +81,22 @@
 
     <!-- Mobile Tab Bar -->
     <nav class="tab-bar">
-        <a class="tab-item active" data-view="dashboard">
-            <span class="icon" id="tab-icon-dashboard"></span>
+        <div class="tab-item active" data-view="dashboard">
+            <i class="ti ti-home"></i>
             <span>Home</span>
-        </a>
-        <a class="tab-item" data-view="orders">
-            <span class="icon" id="tab-icon-orders"></span>
+        </div>
+        <div class="tab-item" data-view="orders">
+            <i class="ti ti-clipboard-list"></i>
             <span>Orders</span>
-        </a>
-        <a class="tab-item" data-view="tasks">
-            <span class="icon" id="tab-icon-tasks"></span>
+        </div>
+        <div class="tab-item" data-view="tasks">
+            <i class="ti ti-package"></i>
             <span>Stock</span>
-        </a>
-        <a class="tab-item" data-view="clients">
-            <span class="icon" id="tab-icon-clients"></span>
+        </div>
+        <div class="tab-item" data-view="clients">
+            <i class="ti ti-users"></i>
             <span>Clients</span>
-        </a>
+        </div>
     </nav>
 
     <!-- Modals -->

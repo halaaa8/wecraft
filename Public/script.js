@@ -22,6 +22,7 @@ const ICONS = {
     kanban_view: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>`,
     phone: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.81.37 1.6.72 2.33a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.75-1.29a2 2 0 0 1 2.11-.45c.73.35 1.52.6 2.33.72A2 2 0 0 1 22 16.92z"></path></svg>`,
     mail: `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+    inventory: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>`,
     sun: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>`,
     moon: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3c0 .4.04.79.1 1.17A7 7 0 0021 12.79z"></path></svg>`,
 };
@@ -445,6 +446,15 @@ function renderView() {
     const title = document.getElementById('view-title');
     title.textContent = currentView.charAt(0).toUpperCase() + currentView.slice(1);
 
+    // Update active states in navigation
+    document.querySelectorAll('.nav-link[data-view], .tab-item[data-view]').forEach(el => {
+        if (el.dataset.view === currentView) {
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
+    });
+
     content.innerHTML = '';
     content.className = 'content-area fade-in';
 
@@ -455,8 +465,9 @@ function renderView() {
         case 'orders':
             renderOrders(content);
             break;
+        case 'inventory':
         case 'tasks':
-            renderTasks(content);
+            renderInventory(content);
             break;
         case 'clients':
             renderClients(content);
@@ -825,7 +836,7 @@ function renderOrders(container) {
     if (ordersViewMode === 'kanban') setupKanbanListeners();
 }
 
-function renderTasks(container) {
+function renderInventory(container) {
     const activeOrders = orders.filter(o => ['To Do', 'Doing'].includes(o.status));
 
     // Aggregate inventory
